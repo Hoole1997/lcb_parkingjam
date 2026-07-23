@@ -97,9 +97,12 @@ val hasGoogleReleaseSigning = googleReleaseKeystoreFile.isFile &&
     googleReleaseStorePassword.isNotEmpty() &&
     googleReleaseKeyAlias.isNotEmpty() &&
     googleReleaseKeyPassword.isNotEmpty()
+val googleReleaseArtifactTaskPrefixes = listOf("assemble", "bundle", "package", "publish")
 val requiresGoogleReleaseSigning = gradle.startParameter.taskNames.any { taskName ->
-    val lowerTaskName = taskName.lowercase()
-    lowerTaskName.contains("google") && lowerTaskName.contains("release")
+    val simpleTaskName = taskName.substringAfterLast(':').lowercase()
+    // Metadata helper tasks also contain "GoogleRelease" in their names but do not sign output.
+    simpleTaskName.contains("googlerelease") &&
+        googleReleaseArtifactTaskPrefixes.any(simpleTaskName::startsWith)
 }
 val artifactProjectName = rootProject.name.toArtifactNameSegment("android_app")
 val artifactVersionName = resolvedVersionName.toArtifactNameSegment("unknown")
