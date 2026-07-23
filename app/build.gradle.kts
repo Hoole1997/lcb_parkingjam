@@ -1,3 +1,7 @@
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -46,6 +50,14 @@ fun secretValue(name: String): String {
         ?: System.getenv(name)?.trim().orEmpty()
 }
 
+/** Converts configurable project metadata into a portable artifact file-name segment. */
+fun String.toArtifactNameSegment(fallback: String): String {
+    return trim()
+        .replace(Regex("[^A-Za-z0-9._-]+"), "_")
+        .trim('_', '.', '-')
+        .ifEmpty { fallback }
+}
+
 fun resolveSigningFile(path: String) = file(path).takeIf { it.isAbsolute } ?: rootProject.file(path)
 
 fun googleServicesPackageName(flavor: String): String? {
@@ -89,7 +101,15 @@ val requiresGoogleReleaseSigning = gradle.startParameter.taskNames.any { taskNam
     val lowerTaskName = taskName.lowercase()
     lowerTaskName.contains("google") && lowerTaskName.contains("release")
 }
-val googleReleaseAabName = "lcb_template_release_$resolvedVersionName.aab"
+val artifactProjectName = rootProject.name.toArtifactNameSegment("android_app")
+val artifactVersionName = resolvedVersionName.toArtifactNameSegment("unknown")
+// UTC keeps artifact names unambiguous across local machines and GitHub-hosted runners.
+val artifactTimestampUtc = DateTimeFormatter
+    .ofPattern("yyyyMMdd_HHmmss")
+    .withZone(ZoneOffset.UTC)
+    .format(Instant.now())
+val googleReleaseAabName =
+    "${artifactProjectName}_google_release_v${artifactVersionName}_${artifactTimestampUtc}_UTC.aab"
 val releaseMinifyEnabled = booleanGradleProperty("android.release.minifyEnabled", true)
 val releaseShrinkResourcesEnabled = booleanGradleProperty("android.release.shrinkResourcesEnabled", false)
 val releaseOptimizeEnabled = booleanGradleProperty("android.release.optimizeEnabled", releaseMinifyEnabled)

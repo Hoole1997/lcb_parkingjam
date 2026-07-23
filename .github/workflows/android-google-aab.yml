@@ -22,16 +22,29 @@ jobs:
 
     env:
       KEYSTORE_REPO_PATH: app/src/google/google-release.keystore
-      KEYSTORE_GRADLE_PATH: app/src/google/google-release.keystore
+      # The Android application module resolves relative signing paths from app/.
+      KEYSTORE_GRADLE_PATH: src/google/google-release.keystore
       KEYSTORE_ALIAS: google
       KEYSTORE_PASSWORD: google123456
       KEY_PASSWORD: google123456
       GRADLE_JVM_ARGS: -Xmx6144m -XX:MaxMetaspaceSize=1024m -XX:+UseParallelGC -Dfile.encoding=UTF-8
       KOTLIN_DAEMON_JVM_ARGS: -Xmx1024m
-      GITHUB_ACTOR: ${{ github.actor }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Dedicated credentials are required because the Launcher SDK is hosted in another
+      # private GitHub Packages repository. Do not couple package access to the workflow actor.
+      LAUNCHER_SDK_GITHUB_USER: ${{ vars.LAUNCHER_SDK_GITHUB_USER }}
+      LAUNCHER_SDK_GITHUB_TOKEN: ${{ secrets.LAUNCHER_SDK_GITHUB_TOKEN }}
 
     steps:
+      - name: Verify Launcher SDK credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${LAUNCHER_SDK_GITHUB_USER:-}" ] || [ -z "${LAUNCHER_SDK_GITHUB_TOKEN:-}" ]; then
+            echo "Missing Launcher SDK credentials." >&2
+            echo "Configure repository variable LAUNCHER_SDK_GITHUB_USER and repository secret LAUNCHER_SDK_GITHUB_TOKEN." >&2
+            exit 1
+          fi
+
       - name: Checkout main
         uses: actions/checkout@v4
         with:

@@ -20,6 +20,16 @@ if (buildConfigFile.exists()) {
     buildConfig.load(buildConfigFile.inputStream())
 }
 
+// Private Launcher SDK credentials have their own CI names so package access is independent of
+// the GitHub Actions trigger account. Existing local properties and legacy environment variables
+// remain valid to avoid disrupting developer machines and older workflows.
+val launcherSdkGithubUser = buildConfig.getProperty("github.user")
+    ?: System.getenv("LAUNCHER_SDK_GITHUB_USER")
+    ?: System.getenv("GITHUB_ACTOR")
+val launcherSdkGithubToken = buildConfig.getProperty("github.token")
+    ?: System.getenv("LAUNCHER_SDK_GITHUB_TOKEN")
+    ?: System.getenv("GITHUB_TOKEN")
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -37,8 +47,8 @@ dependencyResolutionManagement {
         maven {
             url = uri("https://maven.pkg.github.com/toukaRemax/remax_sdk")
             credentials {
-                username = buildConfig.getProperty("github.user") ?: System.getenv("GITHUB_ACTOR")
-                password = buildConfig.getProperty("github.token") ?: System.getenv("GITHUB_TOKEN")
+                username = launcherSdkGithubUser
+                password = launcherSdkGithubToken
             }
         }
     }
