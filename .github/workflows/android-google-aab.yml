@@ -30,8 +30,9 @@ jobs:
       GRADLE_JVM_ARGS: -Xmx6144m -XX:MaxMetaspaceSize=1024m -XX:+UseParallelGC -Dfile.encoding=UTF-8
       KOTLIN_DAEMON_JVM_ARGS: -Xmx1024m
       # Dedicated credentials are required because the Launcher SDK is hosted in another
-      # private GitHub Packages repository. Do not couple package access to the workflow actor.
-      LAUNCHER_SDK_GITHUB_USER: ${{ vars.LAUNCHER_SDK_GITHUB_USER }}
+      # private GitHub Packages repository. Store both values as repository secrets so their
+      # configuration is consistent and neither credential is coupled to the workflow actor.
+      LAUNCHER_SDK_GITHUB_USER: ${{ secrets.LAUNCHER_SDK_GITHUB_USER }}
       LAUNCHER_SDK_GITHUB_TOKEN: ${{ secrets.LAUNCHER_SDK_GITHUB_TOKEN }}
 
     steps:
@@ -41,7 +42,7 @@ jobs:
           set -euo pipefail
           if [ -z "${LAUNCHER_SDK_GITHUB_USER:-}" ] || [ -z "${LAUNCHER_SDK_GITHUB_TOKEN:-}" ]; then
             echo "Missing Launcher SDK credentials." >&2
-            echo "Configure repository variable LAUNCHER_SDK_GITHUB_USER and repository secret LAUNCHER_SDK_GITHUB_TOKEN." >&2
+            echo "Configure repository secrets LAUNCHER_SDK_GITHUB_USER and LAUNCHER_SDK_GITHUB_TOKEN." >&2
             exit 1
           fi
 
