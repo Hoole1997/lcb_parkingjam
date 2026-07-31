@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_game_level_select_back">返回游戏首页</string>
+    <string name="feature_game_level_select_title">关卡选择</string>
+    <string name="feature_game_level_select_chapter">阳光街区</string>
+    <string name="feature_game_level_select_stars_format">星星 %1$d / %2$d</string>
+    <string name="feature_game_level_select_stars_compact_format">%1$d / %2$d</string>
+    <string name="feature_game_level_select_continue_format">继续第 %1$d 关</string>
+    <string name="feature_game_level_select_node_completed">第 %1$d 关，已完成，%2$d 星</string>
+    <string name="feature_game_level_select_node_current">第 %1$d 关，当前关卡</string>
+    <string name="feature_game_level_select_node_available">第 %1$d 关，可以挑战</string>
+    <string name="feature_game_level_select_node_locked">第 %1$d 关，尚未解锁</string>
+    <string name="feature_game_level_select_node_boss_suffix">，首领关卡</string>
+    <string name="feature_game_level_select_node_hard_suffix">，困难预览关卡</string>
+    <string name="feature_game_level_select_boss_badge">BOSS</string>
+    <string name="feature_game_level_select_hard_badge">挑战</string>
+</resources>

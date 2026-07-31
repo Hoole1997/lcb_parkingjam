@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="feature_game_error">Este nivel no está disponible temporalmente</string>
+    <string name="feature_game_retry">Recargar</string>
+    <string name="feature_game_home_title">Escape del aparcamiento</string>
+    <string name="feature_game_home_level_format">Continuar nivel %1$d</string>
+    <string name="feature_game_home_progress_format">Progreso principal %1$d / %2$d</string>
+    <string name="feature_game_home_progress_accessibility">Progreso principal %1$d de %2$d, estrellas %3$d de %4$d</string>
+    <string name="feature_game_home_star_progress_accessibility">Progreso de estrellas %1$d de %2$d</string>
+    <string name="feature_game_home_next">Siguiente nivel</string>
+    <string name="feature_game_home_restart">Reiniciar nivel</string>
+    <string name="feature_game_home_all_complete">Todos los niveles actuales completados</string>
+    <string name="feature_game_home_chapter">Zona 1 · Barrio Soleado</string>
+    <string name="feature_game_home_chapter_short">Barrio Soleado</string>
+    <string name="feature_game_home_star_format">%1$d estrellas</string>
+    <string name="feature_game_home_star_short_format">%1$d ★</string>
+    <string name="feature_game_home_select_levels">Elegir nivel</string>
+    <string name="feature_game_home_settings">Ajustes</string>
+    <string name="feature_game_settings_title">Ajustes del juego</string>
+    <string name="feature_game_settings_back">Volver al inicio del juego</string>
+    <string name="feature_game_settings_language">Idioma</string>
+    <string name="feature_game_settings_language_accessibility">Idioma actual: %1$s</string>
+    <string name="feature_game_settings_feedback">Comentarios</string>
+    <string name="feature_game_settings_feedback_subtitle">Contacta por correo electrónico</string>
+    <string name="feature_game_settings_privacy">Política de privacidad</string>
+    <string name="feature_game_settings_privacy_subtitle">Ver información de privacidad y datos</string>
+    <string name="feature_game_settings_version">Versión</string>
+    <string name="feature_game_settings_version_accessibility">Versión %1$s</string>
+    <string name="feature_game_level_select_back">Volver al inicio del juego</string>
+    <string name="feature_game_level_select_title">Elegir nivel</string>
+    <string name="feature_game_level_select_chapter">Barrio Soleado</string>
+    <string name="feature_game_level_select_stars_format">Estrellas %1$d / %2$d</string>
+    <string name="feature_game_level_select_stars_compact_format">%1$d / %2$d</string>
+    <string name="feature_game_level_select_continue_format">Continuar nivel %1$d</string>
+    <string name="feature_game_level_select_node_completed">Nivel %1$d, completado, %2$d estrellas</string>
+    <string name="feature_game_level_select_node_current">Nivel %1$d, nivel actual</string>
+    <string name="feature_game_level_select_node_available">Nivel %1$d, disponible</string>
+    <string name="feature_game_level_select_node_locked">Nivel %1$d, bloqueado</string>
+    <string name="feature_game_level_select_node_boss_suffix">, nivel jefe</string>
+    <string name="feature_game_level_select_node_hard_suffix">, nivel de desafío</string>
+    <string name="feature_game_level_select_boss_badge">JEFE</string>
+    <string name="feature_game_level_select_hard_badge">DIFÍCIL</string>
+</resources>

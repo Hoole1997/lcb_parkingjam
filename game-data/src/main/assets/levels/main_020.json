@@ -1,0 +1,372 @@
+{
+  "schema_version": 2,
+  "level_id": "main_020",
+  "level_version": 2,
+  "rule_version": 2,
+  "chapter_id": "chapter_01",
+  "display_number": 20,
+  "mode": "boss",
+  "difficulty_tier": "d4",
+  "progression": {
+    "prerequisite_level_ids": [
+      "main_019"
+    ],
+    "skippable": false
+  },
+  "board": {
+    "width": 8,
+    "height": 9
+  },
+  "objective": {
+    "type": "boss_clear",
+    "required_vehicle_ids": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+      "O",
+      "P",
+      "Q",
+      "R"
+    ]
+  },
+  "vehicles": [
+    {
+      "vehicle_id": "A",
+      "type": "truck",
+      "anchor": {
+        "x": 0,
+        "y": 0
+      },
+      "direction": "west",
+      "length": 3,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "B",
+      "type": "car",
+      "anchor": {
+        "x": 3,
+        "y": 0
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    },
+    {
+      "vehicle_id": "C",
+      "type": "car",
+      "anchor": {
+        "x": 5,
+        "y": 0
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "purple"
+    },
+    {
+      "vehicle_id": "D",
+      "type": "truck",
+      "anchor": {
+        "x": 5,
+        "y": 1
+      },
+      "direction": "east",
+      "length": 3,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "E",
+      "type": "car",
+      "anchor": {
+        "x": 3,
+        "y": 1
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    },
+    {
+      "vehicle_id": "F",
+      "type": "car",
+      "anchor": {
+        "x": 1,
+        "y": 1
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "purple"
+    },
+    {
+      "vehicle_id": "G",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 2
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "H",
+      "type": "car",
+      "anchor": {
+        "x": 2,
+        "y": 2
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "yellow"
+    },
+    {
+      "vehicle_id": "I",
+      "type": "car",
+      "anchor": {
+        "x": 4,
+        "y": 2
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "purple"
+    },
+    {
+      "vehicle_id": "J",
+      "type": "car",
+      "anchor": {
+        "x": 6,
+        "y": 3
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "K",
+      "type": "car",
+      "anchor": {
+        "x": 4,
+        "y": 3
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "yellow"
+    },
+    {
+      "vehicle_id": "L",
+      "type": "car",
+      "anchor": {
+        "x": 2,
+        "y": 3
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "mint"
+    },
+    {
+      "vehicle_id": "M",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 4
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    },
+    {
+      "vehicle_id": "N",
+      "type": "car",
+      "anchor": {
+        "x": 2,
+        "y": 4
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "yellow"
+    },
+    {
+      "vehicle_id": "O",
+      "type": "car",
+      "anchor": {
+        "x": 4,
+        "y": 4
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "mint"
+    },
+    {
+      "vehicle_id": "P",
+      "type": "car",
+      "anchor": {
+        "x": 6,
+        "y": 5
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    },
+    {
+      "vehicle_id": "Q",
+      "type": "car",
+      "anchor": {
+        "x": 4,
+        "y": 5
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "yellow"
+    },
+    {
+      "vehicle_id": "R",
+      "type": "car",
+      "anchor": {
+        "x": 2,
+        "y": 5
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "mint"
+    }
+  ],
+  "exits": [
+    {
+      "exit_id": "east_full",
+      "direction": "east",
+      "offset": 0,
+      "length": 9,
+      "allowed_vehicle_types": [
+        "car",
+        "truck"
+      ]
+    },
+    {
+      "exit_id": "west_full",
+      "direction": "west",
+      "offset": 0,
+      "length": 9,
+      "allowed_vehicle_types": [
+        "car",
+        "truck"
+      ]
+    }
+  ],
+  "initial_safety": {
+    "mode": "unlimited"
+  },
+  "reward_profile_id": "boss_60",
+  "tutorial_directives": [],
+  "canonical_solution": [
+    "A",
+    "D",
+    "G",
+    "J",
+    "M",
+    "P",
+    "B",
+    "E",
+    "H",
+    "K",
+    "N",
+    "Q",
+    "C",
+    "F",
+    "I",
+    "L",
+    "O",
+    "R"
+  ],
+  "difficulty_metrics": {
+    "vehicle_count": 18,
+    "required_count": 18,
+    "solution_steps": 18,
+    "dependency_depth": 3,
+    "safe_first_moves": 6,
+    "false_affordances": 12,
+    "mechanic_count": 0,
+    "board_density": 0.5278,
+    "branching_mean": 3.9
+  },
+  "content_tags": [
+    "boss",
+    "dependency"
+  ],
+  "parking_rules": {
+    "capacity": 5,
+    "overflow_policy": "reject_exit",
+    "orders": [
+      {
+        "order_id": "order_01",
+        "color_id": "coral",
+        "required_count": 4
+      },
+      {
+        "order_id": "order_02",
+        "color_id": "blue",
+        "required_count": 4
+      },
+      {
+        "order_id": "order_03",
+        "color_id": "yellow",
+        "required_count": 4
+      },
+      {
+        "order_id": "order_04",
+        "color_id": "purple",
+        "required_count": 3
+      },
+      {
+        "order_id": "order_05",
+        "color_id": "mint",
+        "required_count": 3
+      }
+    ]
+  }
+}

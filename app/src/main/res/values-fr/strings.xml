@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">Équipe de secours routier</string>
+    <string name="privacy_title">Confidentialité et données</string>
+    <string name="privacy_message">La progression est enregistrée sur cet appareil. Vous pouvez autoriser les statistiques anonymes, le diagnostic des pannes et les services publicitaires, ou utiliser le mode essentiel sans ces services facultatifs. Votre choix ne modifie pas le jeu principal.</string>
+    <string name="privacy_allow_optional">Accepter et continuer</string>
+    <string name="privacy_essential_only">Mode essentiel uniquement</string>
+    <string name="privacy_save_failed">Votre choix n’a pas pu être enregistré. Le mode essentiel sera utilisé pour cette session.</string>
+    <string name="game_all_complete">Les 30 niveaux de la zone 1 sont terminés !</string>
+    <string name="game_settings_title">Paramètres du jeu</string>
+    <string name="game_settings_message">Le mode immersif est activé. Faites glisser depuis un bord pour afficher temporairement les barres système. Le jeu se met en pause et se sauvegarde en arrière-plan.</string>
+    <string name="game_settings_close">Compris</string>
+    <string name="settings_language_dialog_title">Choisir la langue</string>
+    <string name="settings_language_system">Langue du système</string>
+    <string name="settings_language_simplified_chinese">简体中文</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_option_selected_accessibility">Sélectionné : %1$s</string>
+    <string name="settings_version_format">v%1$s</string>
+    <string name="settings_feedback_subject">Avis sur %1$s (%2$s)</string>
+    <string name="settings_feedback_chooser">Choisir une application de messagerie</string>
+    <string name="settings_feedback_unavailable">Aucune application de messagerie disponible</string>
+    <string name="settings_privacy_browser_unavailable">Aucun navigateur disponible pour ouvrir la politique de confidentialité</string>
+    <string name="tutorial_level_1">Touchez un véhicule pour le déplacer dans la direction indiquée</string>
+    <string name="tutorial_level_2">Les véhicules peuvent sortir dans plusieurs directions. Essayez-en plusieurs</string>
+    <string name="tutorial_level_3">En cas de blocage, déplacez d’abord le véhicule de devant</string>
+    <string name="tutorial_level_4">Alternez entre les deux flux de circulation</string>
+    <string name="tutorial_level_5">Repérez les obstacles, puis commencez par les véhicules de devant</string>
+</resources>

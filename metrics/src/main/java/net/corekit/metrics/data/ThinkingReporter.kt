@@ -16,12 +16,14 @@ class ThinkingReporter : ReporterData {
     private val gson = Gson()
 
     companion object {
-        private var isInitialized = true
+        @Volatile
+        private var isInitialized = false
 
         /**
          * 初始化数数SDK
          * @param context 应用上下文
          */
+        @Synchronized
         fun init(context: Context) {
 
             if (isInitialized) {
@@ -39,7 +41,7 @@ class ThinkingReporter : ReporterData {
                 }
 
                 // 初始化数数SDK
-                TDAnalytics.init(context, appId, serverUrl)
+                TDAnalytics.init(context.applicationContext, appId, serverUrl)
                 TDAnalytics.enableLog(MetricsLogger.checkLogEnabled())
                 TDAnalytics.enableAutoTrack(
                     (TDAnalytics.TDAutoTrackEventType.APP_START or TDAnalytics.TDAutoTrackEventType.APP_END

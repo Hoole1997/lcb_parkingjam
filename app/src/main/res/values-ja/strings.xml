@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">パーキングレスキュー隊</string>
+    <string name="privacy_title">プライバシーとデータの選択</string>
+    <string name="privacy_message">ゲームの進行状況はこの端末に保存されます。匿名の利用統計、クラッシュ診断、広告サービスを許可するか、任意サービスを使わない基本モードを選択できます。メインゲームには影響しません。</string>
+    <string name="privacy_allow_optional">同意して続ける</string>
+    <string name="privacy_essential_only">基本モードのみ</string>
+    <string name="privacy_save_failed">選択を保存できませんでした。このセッションでは基本モードを使用します。</string>
+    <string name="game_all_complete">エリア1の30レベルをすべてクリアしました！</string>
+    <string name="game_settings_title">ゲーム設定</string>
+    <string name="game_settings_message">没入表示が有効です。画面端からスワイプするとシステムバーを一時表示できます。バックグラウンドではゲームを一時停止して保存します。</string>
+    <string name="game_settings_close">OK</string>
+    <string name="settings_language_dialog_title">言語を選択</string>
+    <string name="settings_language_system">システム設定に従う</string>
+    <string name="settings_language_simplified_chinese">简体中文</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_option_selected_accessibility">選択中：%1$s</string>
+    <string name="settings_version_format">v%1$s</string>
+    <string name="settings_feedback_subject">%1$s フィードバック（%2$s）</string>
+    <string name="settings_feedback_chooser">メールアプリを選択</string>
+    <string name="settings_feedback_unavailable">利用できるメールアプリがありません</string>
+    <string name="settings_privacy_browser_unavailable">プライバシーポリシーを開けるブラウザがありません</string>
+    <string name="tutorial_level_1">車をタップして、向いている方向へ移動させます</string>
+    <string name="tutorial_level_2">車はさまざまな方向へ出られます。続けてタップしてみましょう</string>
+    <string name="tutorial_level_3">塞がれているときは、手前の車から動かします</string>
+    <string name="tutorial_level_4">2つの車列を交互に整理できます</string>
+    <string name="tutorial_level_5">障害を確認し、先頭の車から動かしましょう</string>
+</resources>

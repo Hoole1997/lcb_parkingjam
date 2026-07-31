@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="feature_game_background">#F5EEDF</color>
+    <color name="feature_game_hud">#FFF8E9</color>
+    <color name="feature_game_surface">#FFF9EF</color>
+    <color name="feature_game_overlay">#990D2D31</color>
+    <color name="feature_game_primary">#FFD15A</color>
+    <color name="feature_game_primary_pressed">#F0B83D</color>
+    <color name="feature_game_primary_text">#24484A</color>
+    <color name="feature_game_secondary_text">#627A77</color>
+    <color name="feature_game_tutorial">#FFF7D9</color>
+    <color name="feature_game_outline">#E4D3B7</color>
+    <color name="feature_game_mint">#63D6B0</color>
+    <color name="feature_game_mint_deep">#2C8D83</color>
+    <color name="feature_game_coral">#FF7E66</color>
+    <color name="feature_game_sky">#5CC7F2</color>
+    <color name="feature_game_purple">#A678DD</color>
+    <color name="feature_game_locked">#B7C1BE</color>
+    <color name="feature_game_danger">#E7655A</color>
+</resources>

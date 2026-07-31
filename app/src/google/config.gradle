@@ -55,7 +55,9 @@ ext {
            minSdk       : 26,
            targetSdk    : 35,
            versionCode  : 1,
-           versionName  : "1.0.0"]
+           versionName  : "1.0.0",
+           // 示例隐私页；正式发布前替换为应用自己的 HTTPS 地址。
+           privacyPolicyUrl: "https://example.com/privacy-policy"]
 
     // 统计归因配置
     analytics = [adjustAppToken: "hopjs50gmuww",           // Adjust App Token

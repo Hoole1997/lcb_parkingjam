@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="feature_game_error">Ce niveau est temporairement indisponible</string>
+    <string name="feature_game_retry">Recharger</string>
+    <string name="feature_game_home_title">Évasion du parking</string>
+    <string name="feature_game_home_level_format">Continuer le niveau %1$d</string>
+    <string name="feature_game_home_progress_format">Progression principale %1$d / %2$d</string>
+    <string name="feature_game_home_progress_accessibility">Progression principale %1$d sur %2$d, étoiles %3$d sur %4$d</string>
+    <string name="feature_game_home_star_progress_accessibility">Progression des étoiles %1$d sur %2$d</string>
+    <string name="feature_game_home_next">Niveau suivant</string>
+    <string name="feature_game_home_restart">Recommencer le niveau</string>
+    <string name="feature_game_home_all_complete">Tous les niveaux actuels sont terminés</string>
+    <string name="feature_game_home_chapter">Zone 1 · Quartier Soleil</string>
+    <string name="feature_game_home_chapter_short">Quartier Soleil</string>
+    <string name="feature_game_home_star_format">%1$d étoiles</string>
+    <string name="feature_game_home_star_short_format">%1$d ★</string>
+    <string name="feature_game_home_select_levels">Choisir un niveau</string>
+    <string name="feature_game_home_settings">Paramètres</string>
+    <string name="feature_game_settings_title">Paramètres du jeu</string>
+    <string name="feature_game_settings_back">Retour à l’accueil du jeu</string>
+    <string name="feature_game_settings_language">Langue</string>
+    <string name="feature_game_settings_language_accessibility">Langue actuelle : %1$s</string>
+    <string name="feature_game_settings_feedback">Avis</string>
+    <string name="feature_game_settings_feedback_subtitle">Nous contacter par e-mail</string>
+    <string name="feature_game_settings_privacy">Politique de confidentialité</string>
+    <string name="feature_game_settings_privacy_subtitle">Voir les informations de confidentialité et de données</string>
+    <string name="feature_game_settings_version">Version</string>
+    <string name="feature_game_settings_version_accessibility">Version %1$s</string>
+    <string name="feature_game_level_select_back">Retour à l’accueil du jeu</string>
+    <string name="feature_game_level_select_title">Choisir un niveau</string>
+    <string name="feature_game_level_select_chapter">Quartier Soleil</string>
+    <string name="feature_game_level_select_stars_format">Étoiles %1$d / %2$d</string>
+    <string name="feature_game_level_select_stars_compact_format">%1$d / %2$d</string>
+    <string name="feature_game_level_select_continue_format">Continuer le niveau %1$d</string>
+    <string name="feature_game_level_select_node_completed">Niveau %1$d, terminé, %2$d étoiles</string>
+    <string name="feature_game_level_select_node_current">Niveau %1$d, niveau actuel</string>
+    <string name="feature_game_level_select_node_available">Niveau %1$d, disponible</string>
+    <string name="feature_game_level_select_node_locked">Niveau %1$d, verrouillé</string>
+    <string name="feature_game_level_select_node_boss_suffix">, niveau boss</string>
+    <string name="feature_game_level_select_node_hard_suffix">, niveau défi</string>
+    <string name="feature_game_level_select_boss_badge">BOSS</string>
+    <string name="feature_game_level_select_hard_badge">DIFFICILE</string>
+</resources>

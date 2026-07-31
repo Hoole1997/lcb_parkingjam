@@ -1,9 +1,30 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.LCB_Template" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+    <!-- 游戏视觉稿采用固定浅色调，避免系统夜间模式让原生控件与场景色失配。 -->
+    <style name="Base.Theme.LCB_Template" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="Theme.LCB_Template" parent="Base.Theme.LCB_Template" />
+
+    <!--
+        游戏页由窗口层绘制唯一一份 NinePatch 庭院背景。内容根节点保持透明，既保留
+        冷启动预览，又避免 Window 与 Activity 根布局重复绘制整屏位图。
+    -->
+    <style name="Theme.LCB_Template.Game" parent="Theme.LCB_Template">
+        <item name="android:windowBackground">@drawable/parking_courtyard_background</item>
+    </style>
+
+    <!-- 设置页预览背景与 Compose 首帧一致，页面跳转期间不会闪出旧庭院或纯色底。 -->
+    <style name="Theme.LCB_Template.Game.Settings" parent="Theme.LCB_Template.Game">
+        <item name="android:windowBackground">@drawable/parking_settings_courtyard</item>
+    </style>
+
+    <!-- 首次绘制由 FirstFrameDrawGate 控制；禁用系统预览，期间继续显示栈内上一页面。 -->
+    <style name="Theme.LCB_Template.Game.Play" parent="Theme.LCB_Template.Game">
+        <item name="android:windowDisablePreview">true</item>
+    </style>
 </resources>

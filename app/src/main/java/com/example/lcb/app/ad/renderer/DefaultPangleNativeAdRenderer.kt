@@ -1,7 +1,6 @@
 package com.example.lcb.app.ad.renderer
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,6 @@ import com.android.common.bill.ui.pangle.PangleNativeAdStyle
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAdData
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGViewBinder
 import com.example.lcb.app.R
-import java.net.HttpURLConnection
-import java.net.URL
 
 class DefaultPangleNativeAdRenderer : PangleNativeAdRenderer {
 
@@ -33,7 +30,7 @@ class DefaultPangleNativeAdRenderer : PangleNativeAdRenderer {
         tvButton.text = nativeAdData.buttonText
 
         nativeAdData.icon?.imageUrl?.let { url ->
-            loadImageInto(url, ivIcon)
+            NativeAdImageLoader.loadIcon(url, ivIcon)
         }
     }
 
@@ -49,15 +46,4 @@ class DefaultPangleNativeAdRenderer : PangleNativeAdRenderer {
         )
     }
 
-    private fun loadImageInto(url: String, imageView: ImageView) {
-        Thread {
-            runCatching {
-                val connection = URL(url).openConnection() as HttpURLConnection
-                connection.doInput = true
-                connection.connect()
-                val bitmap = connection.inputStream.use { BitmapFactory.decodeStream(it) }
-                imageView.post { imageView.setImageBitmap(bitmap) }
-            }
-        }.start()
-    }
 }

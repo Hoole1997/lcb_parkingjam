@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">주차 구조대</string>
+    <string name="privacy_title">개인정보 및 데이터 선택</string>
+    <string name="privacy_message">게임 진행 상황은 이 기기에 저장됩니다. 익명 분석, 충돌 진단 및 광고 서비스를 허용하거나 선택 서비스를 사용하지 않는 기본 모드를 선택할 수 있습니다. 메인 게임에는 영향을 주지 않습니다.</string>
+    <string name="privacy_allow_optional">동의하고 계속</string>
+    <string name="privacy_essential_only">기본 모드만</string>
+    <string name="privacy_save_failed">선택을 저장하지 못했습니다. 이번 세션에서는 기본 모드를 사용합니다.</string>
+    <string name="game_all_complete">지역 1의 30개 레벨을 모두 완료했습니다!</string>
+    <string name="game_settings_title">게임 설정</string>
+    <string name="game_settings_message">몰입형 화면이 활성화되어 있습니다. 화면 가장자리에서 스와이프하면 시스템 표시줄을 잠시 볼 수 있습니다. 백그라운드에서는 게임이 일시정지되고 저장됩니다.</string>
+    <string name="game_settings_close">확인</string>
+    <string name="settings_language_dialog_title">언어 선택</string>
+    <string name="settings_language_system">시스템 설정 따르기</string>
+    <string name="settings_language_simplified_chinese">简体中文</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_option_selected_accessibility">선택됨: %1$s</string>
+    <string name="settings_version_format">v%1$s</string>
+    <string name="settings_feedback_subject">%1$s 피드백 (%2$s)</string>
+    <string name="settings_feedback_chooser">이메일 앱 선택</string>
+    <string name="settings_feedback_unavailable">사용 가능한 이메일 앱이 없습니다</string>
+    <string name="settings_privacy_browser_unavailable">개인정보처리방침을 열 브라우저가 없습니다</string>
+    <string name="tutorial_level_1">차량을 탭하여 바라보는 방향으로 이동하세요</string>
+    <string name="tutorial_level_2">차량은 여러 방향으로 나갈 수 있습니다. 연속으로 탭해 보세요</string>
+    <string name="tutorial_level_3">막혀 있다면 앞쪽 차량부터 이동하세요</string>
+    <string name="tutorial_level_4">두 차량 흐름을 번갈아 정리할 수 있습니다</string>
+    <string name="tutorial_level_5">방해물을 확인한 뒤 앞쪽 차량부터 시작하세요</string>
+</resources>

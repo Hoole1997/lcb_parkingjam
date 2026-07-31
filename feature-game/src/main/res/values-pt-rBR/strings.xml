@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="feature_game_error">Esta fase está temporariamente indisponível</string>
+    <string name="feature_game_retry">Recarregar</string>
+    <string name="feature_game_home_title">Fuga do Estacionamento</string>
+    <string name="feature_game_home_level_format">Continuar fase %1$d</string>
+    <string name="feature_game_home_progress_format">Progresso principal %1$d / %2$d</string>
+    <string name="feature_game_home_progress_accessibility">Progresso principal %1$d de %2$d, estrelas %3$d de %4$d</string>
+    <string name="feature_game_home_star_progress_accessibility">Progresso de estrelas %1$d de %2$d</string>
+    <string name="feature_game_home_next">Próxima fase</string>
+    <string name="feature_game_home_restart">Reiniciar fase</string>
+    <string name="feature_game_home_all_complete">Todas as fases atuais foram concluídas</string>
+    <string name="feature_game_home_chapter">Área 1 · Bairro Ensolarado</string>
+    <string name="feature_game_home_chapter_short">Bairro Ensolarado</string>
+    <string name="feature_game_home_star_format">%1$d estrelas</string>
+    <string name="feature_game_home_star_short_format">%1$d ★</string>
+    <string name="feature_game_home_select_levels">Selecionar fases</string>
+    <string name="feature_game_home_settings">Configurações</string>
+    <string name="feature_game_settings_title">Configurações do jogo</string>
+    <string name="feature_game_settings_back">Voltar ao início do jogo</string>
+    <string name="feature_game_settings_language">Idioma</string>
+    <string name="feature_game_settings_language_accessibility">Idioma atual: %1$s</string>
+    <string name="feature_game_settings_feedback">Feedback</string>
+    <string name="feature_game_settings_feedback_subtitle">Entre em contato por e-mail</string>
+    <string name="feature_game_settings_privacy">Política de privacidade</string>
+    <string name="feature_game_settings_privacy_subtitle">Ver detalhes de privacidade e dados</string>
+    <string name="feature_game_settings_version">Versão</string>
+    <string name="feature_game_settings_version_accessibility">Versão %1$s</string>
+    <string name="feature_game_level_select_back">Voltar ao início do jogo</string>
+    <string name="feature_game_level_select_title">Selecionar fase</string>
+    <string name="feature_game_level_select_chapter">Bairro Ensolarado</string>
+    <string name="feature_game_level_select_stars_format">Estrelas %1$d / %2$d</string>
+    <string name="feature_game_level_select_stars_compact_format">%1$d / %2$d</string>
+    <string name="feature_game_level_select_continue_format">Continuar fase %1$d</string>
+    <string name="feature_game_level_select_node_completed">Fase %1$d, concluída, %2$d estrelas</string>
+    <string name="feature_game_level_select_node_current">Fase %1$d, fase atual</string>
+    <string name="feature_game_level_select_node_available">Fase %1$d, disponível</string>
+    <string name="feature_game_level_select_node_locked">Fase %1$d, bloqueada</string>
+    <string name="feature_game_level_select_node_boss_suffix">, fase de chefe</string>
+    <string name="feature_game_level_select_node_hard_suffix">, fase de desafio</string>
+    <string name="feature_game_level_select_boss_badge">CHEFE</string>
+    <string name="feature_game_level_select_hard_badge">DIFÍCIL</string>
+</resources>

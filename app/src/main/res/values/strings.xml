@@ -1,3 +1,33 @@
 <resources>
-    <string name="app_name">LCB_Template</string>
+    <string name="app_name">挪车救援队</string>
+    <string name="privacy_title">隐私与数据选择</string>
+    <string name="privacy_message">游戏进度会保存在本机。你可以允许匿名统计、崩溃诊断和广告服务，或仅使用不依赖这些可选服务的基础模式。选择不会影响主线关卡游玩。</string>
+    <string name="privacy_allow_optional">同意并继续</string>
+    <string name="privacy_essential_only">仅基础模式</string>
+    <string name="privacy_save_failed">选择暂未保存，本次将使用基础模式</string>
+    <string name="game_all_complete">第一地区 30 个关卡已完成！</string>
+    <string name="game_settings_title">游戏设置</string>
+    <string name="game_settings_message">当前已启用沉浸式显示。可从屏幕边缘滑动临时查看系统栏；游戏进入后台会自动暂停并保存。</string>
+    <string name="game_settings_close">知道了</string>
+    <string name="settings_language_dialog_title">选择语言</string>
+    <string name="settings_language_system">跟随系统</string>
+    <string name="settings_language_simplified_chinese">简体中文</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_japanese" translatable="false">日本語</string>
+    <string name="settings_language_korean" translatable="false">한국어</string>
+    <string name="settings_language_spanish" translatable="false">Español</string>
+    <string name="settings_language_portuguese_brazil" translatable="false">Português (Brasil)</string>
+    <string name="settings_language_french" translatable="false">Français</string>
+    <string name="settings_language_german" translatable="false">Deutsch</string>
+    <string name="settings_language_option_selected_accessibility">已选择：%1$s</string>
+    <string name="settings_version_format">v%1$s</string>
+    <string name="settings_feedback_subject">%1$s 使用反馈（%2$s）</string>
+    <string name="settings_feedback_chooser">选择邮箱应用</string>
+    <string name="settings_feedback_unavailable">未找到可用的邮箱应用</string>
+    <string name="settings_privacy_browser_unavailable">未找到可打开隐私协议的浏览器</string>
+    <string name="tutorial_level_1">点击车辆，让它沿箭头方向驶出</string>
+    <string name="tutorial_level_2">不同方向都能离场，试试连续点击</string>
+    <string name="tutorial_level_3">被挡住时，先让最前面的车离开</string>
+    <string name="tutorial_level_4">两条车流可以交错处理</string>
+    <string name="tutorial_level_5">先观察阻挡，再从两条车流的最前方开始</string>
 </resources>

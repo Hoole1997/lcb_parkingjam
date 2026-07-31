@@ -1,0 +1,20 @@
+# 依赖与构建产物
+node_modules/
+dist/
+
+# Android 构建产物
+android/app/build/
+android/build/
+android/.gradle/
+android/capacitor-cordova-android-plugins/build/
+android/local.properties
+
+# 签名密钥（敏感！本地保管，勿提交公开仓库）
+android/keystore/
+android/keystore.properties
+
+# 系统 / 编辑器
+.DS_Store
+*.log
+.idea/
+.vscode/

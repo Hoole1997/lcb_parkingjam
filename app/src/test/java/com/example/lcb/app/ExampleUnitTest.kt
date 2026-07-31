@@ -1,17 +1,30 @@
 package com.example.lcb.app
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-import org.junit.Assert.*
-
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-class ExampleUnitTest {
+class OneShotActionGateTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun `installed action executes only once after repeated enable`() {
+        var calls = 0
+        val gate = OneShotActionGate()
+
+        gate.install { calls++ }
+        gate.enable()
+        gate.enable()
+
+        assertEquals(1, calls)
+    }
+
+    @Test
+    fun `enable before install still executes installed action once`() {
+        var calls = 0
+        val gate = OneShotActionGate()
+
+        gate.enable()
+        gate.install { calls++ }
+        gate.install { calls += 100 }
+
+        assertEquals(1, calls)
     }
 }

@@ -1,0 +1,232 @@
+{
+  "schema_version": 2,
+  "level_id": "main_022",
+  "level_version": 2,
+  "rule_version": 2,
+  "chapter_id": "chapter_01",
+  "display_number": 22,
+  "mode": "rescue",
+  "difficulty_tier": "d2",
+  "progression": {
+    "prerequisite_level_ids": [
+      "main_021"
+    ],
+    "skippable": false
+  },
+  "board": {
+    "width": 7,
+    "height": 9
+  },
+  "objective": {
+    "type": "rescue_target",
+    "required_vehicle_ids": [
+      "R"
+    ]
+  },
+  "vehicles": [
+    {
+      "vehicle_id": "A",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 0
+      },
+      "direction": "north",
+      "length": 2,
+      "required": false,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "B",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 2
+      },
+      "direction": "north",
+      "length": 2,
+      "required": false,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    },
+    {
+      "vehicle_id": "C",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 4
+      },
+      "direction": "north",
+      "length": 2,
+      "required": false,
+      "tow_prohibited": false,
+      "color_id": "yellow"
+    },
+    {
+      "vehicle_id": "R",
+      "type": "rescue",
+      "anchor": {
+        "x": 0,
+        "y": 6
+      },
+      "direction": "north",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": true,
+      "color_id": "purple"
+    },
+    {
+      "vehicle_id": "D",
+      "type": "car",
+      "anchor": {
+        "x": 1,
+        "y": 7
+      },
+      "direction": "south",
+      "length": 2,
+      "required": false,
+      "tow_prohibited": false,
+      "color_id": "mint"
+    },
+    {
+      "vehicle_id": "E",
+      "type": "car",
+      "anchor": {
+        "x": 2,
+        "y": 0
+      },
+      "direction": "north",
+      "length": 2,
+      "required": false,
+      "tow_prohibited": false,
+      "color_id": "mint"
+    },
+    {
+      "vehicle_id": "F",
+      "type": "car",
+      "anchor": {
+        "x": 3,
+        "y": 7
+      },
+      "direction": "south",
+      "length": 2,
+      "required": false,
+      "tow_prohibited": false,
+      "color_id": "mint"
+    },
+    {
+      "vehicle_id": "G",
+      "type": "car",
+      "anchor": {
+        "x": 4,
+        "y": 0
+      },
+      "direction": "north",
+      "length": 2,
+      "required": false,
+      "tow_prohibited": false,
+      "color_id": "mint"
+    },
+    {
+      "vehicle_id": "H",
+      "type": "car",
+      "anchor": {
+        "x": 5,
+        "y": 7
+      },
+      "direction": "south",
+      "length": 2,
+      "required": false,
+      "tow_prohibited": false,
+      "color_id": "mint"
+    },
+    {
+      "vehicle_id": "I",
+      "type": "car",
+      "anchor": {
+        "x": 6,
+        "y": 0
+      },
+      "direction": "north",
+      "length": 2,
+      "required": false,
+      "tow_prohibited": false,
+      "color_id": "mint"
+    }
+  ],
+  "exits": [
+    {
+      "exit_id": "north_full",
+      "direction": "north",
+      "offset": 0,
+      "length": 7,
+      "allowed_vehicle_types": [
+        "car",
+        "rescue"
+      ]
+    },
+    {
+      "exit_id": "south_full",
+      "direction": "south",
+      "offset": 0,
+      "length": 7,
+      "allowed_vehicle_types": [
+        "car",
+        "rescue"
+      ]
+    }
+  ],
+  "initial_safety": {
+    "mode": "unlimited"
+  },
+  "reward_profile_id": "main_default",
+  "tutorial_directives": [],
+  "canonical_solution": [
+    "A",
+    "B",
+    "C",
+    "R"
+  ],
+  "difficulty_metrics": {
+    "vehicle_count": 10,
+    "required_count": 1,
+    "solution_steps": 4,
+    "dependency_depth": 4,
+    "safe_first_moves": 7,
+    "false_affordances": 3,
+    "mechanic_count": 0,
+    "board_density": 0.3175,
+    "branching_mean": 4.5
+  },
+  "content_tags": [
+    "rescue",
+    "dependency"
+  ],
+  "parking_rules": {
+    "capacity": 5,
+    "overflow_policy": "reject_exit",
+    "orders": [
+      {
+        "order_id": "order_01",
+        "color_id": "coral",
+        "required_count": 1
+      },
+      {
+        "order_id": "order_02",
+        "color_id": "blue",
+        "required_count": 1
+      },
+      {
+        "order_id": "order_03",
+        "color_id": "yellow",
+        "required_count": 1
+      },
+      {
+        "order_id": "order_04",
+        "color_id": "purple",
+        "required_count": 1
+      }
+    ]
+  }
+}

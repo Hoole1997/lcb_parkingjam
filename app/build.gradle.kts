@@ -83,6 +83,10 @@ val toponConfig = extraMap("topon")
 val toponUnitConfig = toponConfig.nestedMap("adUnitIds")
 
 val resolvedVersionName = appConfig.stringValue("versionName", "1.0.0")
+val privacyPolicyUrl = appConfig.stringValue(
+    "privacyPolicyUrl",
+    "https://example.com/privacy-policy",
+)
 val googleReleaseKeystorePath = secretValue("ANDROID_SIGNING_STORE_FILE")
 val googleReleaseKeystoreFile = if (googleReleaseKeystorePath.isNotEmpty()) {
     resolveSigningFile(googleReleaseKeystorePath)
@@ -136,6 +140,7 @@ android {
 
         val defaultChannel = analyticsConfig.stringValue("defaultUserChannel", "default")
         buildConfigField("String", "DEFAULT_USER_CHANNEL", "\"$defaultChannel\"")
+        buildConfigField("String", "PRIVACY_POLICY_URL", "\"$privacyPolicyUrl\"")
 
         manifestPlaceholders["ADMOB_APPLICATION_ID"] = adMobConfig.stringValue("applicationId")
 
@@ -282,6 +287,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.config)
@@ -298,6 +306,7 @@ dependencies {
 //    implementation(project(":bill"))
 //    implementation(project(":core"))
     implementation(project(":metrics"))
+    implementation(project(":feature-game"))
     implementation("com.github.toukaremax:core:1.0.11")
     implementation("com.github.toukaremax:bill:1.0.42") {
         // Launcher SDK provides com.unity3d.ads-mediation:mediation-sdk:9.2.0.
@@ -305,6 +314,6 @@ dependencies {
         exclude(group = "com.ironsource.sdk", module = "mediationsdk")
     }
     // 两个 Launcher SDK 含有相同包名的混淆类，必须按渠道隔离，不能同时进入一个 variant。
-    add("googleImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-RemoteControl:1.0.1")
+    add("googleImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-dev:1.0.1")
     add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-RemoteControl:1.0.1")
 }

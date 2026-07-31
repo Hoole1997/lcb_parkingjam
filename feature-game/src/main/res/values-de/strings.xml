@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="feature_game_error">Dieses Level ist vorübergehend nicht verfügbar</string>
+    <string name="feature_game_retry">Neu laden</string>
+    <string name="feature_game_home_title">Parkplatz-Flucht</string>
+    <string name="feature_game_home_level_format">Level %1$d fortsetzen</string>
+    <string name="feature_game_home_progress_format">Hauptfortschritt %1$d / %2$d</string>
+    <string name="feature_game_home_progress_accessibility">Hauptfortschritt %1$d von %2$d, Sterne %3$d von %4$d</string>
+    <string name="feature_game_home_star_progress_accessibility">Sternfortschritt %1$d von %2$d</string>
+    <string name="feature_game_home_next">Nächstes Level</string>
+    <string name="feature_game_home_restart">Level neu starten</string>
+    <string name="feature_game_home_all_complete">Alle aktuellen Level abgeschlossen</string>
+    <string name="feature_game_home_chapter">Gebiet 1 · Sonnenviertel</string>
+    <string name="feature_game_home_chapter_short">Sonnenviertel</string>
+    <string name="feature_game_home_star_format">%1$d Sterne</string>
+    <string name="feature_game_home_star_short_format">%1$d ★</string>
+    <string name="feature_game_home_select_levels">Level auswählen</string>
+    <string name="feature_game_home_settings">Einstellungen</string>
+    <string name="feature_game_settings_title">Spieleinstellungen</string>
+    <string name="feature_game_settings_back">Zurück zur Spielstartseite</string>
+    <string name="feature_game_settings_language">Sprache</string>
+    <string name="feature_game_settings_language_accessibility">Aktuelle Sprache: %1$s</string>
+    <string name="feature_game_settings_feedback">Feedback</string>
+    <string name="feature_game_settings_feedback_subtitle">Kontakt per E-Mail</string>
+    <string name="feature_game_settings_privacy">Datenschutzerklärung</string>
+    <string name="feature_game_settings_privacy_subtitle">Datenschutz- und Datendetails anzeigen</string>
+    <string name="feature_game_settings_version">Version</string>
+    <string name="feature_game_settings_version_accessibility">Version %1$s</string>
+    <string name="feature_game_level_select_back">Zurück zur Spielstartseite</string>
+    <string name="feature_game_level_select_title">Level auswählen</string>
+    <string name="feature_game_level_select_chapter">Sonnenviertel</string>
+    <string name="feature_game_level_select_stars_format">Sterne %1$d / %2$d</string>
+    <string name="feature_game_level_select_stars_compact_format">%1$d / %2$d</string>
+    <string name="feature_game_level_select_continue_format">Level %1$d fortsetzen</string>
+    <string name="feature_game_level_select_node_completed">Level %1$d, abgeschlossen, %2$d Sterne</string>
+    <string name="feature_game_level_select_node_current">Level %1$d, aktuelles Level</string>
+    <string name="feature_game_level_select_node_available">Level %1$d, verfügbar</string>
+    <string name="feature_game_level_select_node_locked">Level %1$d, gesperrt</string>
+    <string name="feature_game_level_select_node_boss_suffix">, Boss-Level</string>
+    <string name="feature_game_level_select_node_hard_suffix">, Herausforderungslevel</string>
+    <string name="feature_game_level_select_boss_badge">BOSS</string>
+    <string name="feature_game_level_select_hard_badge">SCHWER</string>
+</resources>

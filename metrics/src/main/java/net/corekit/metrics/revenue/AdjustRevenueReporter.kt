@@ -12,9 +12,8 @@ import net.corekit.core.ads.RevenueAdReporter
 import net.corekit.core.utils.ConfigRemoteManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
 import java.io.IOException
 
@@ -35,7 +34,10 @@ data class RevenueConfigItem(
 class AdjustRevenueReporter : RevenueAdReporter {
     
     private val gson = Gson()
+    @Volatile
     private var revenueConfigs: List<RevenueConfigItem> = emptyList()
+
+    @Volatile
     private var isConfigLoaded = false
     
     /**
@@ -49,7 +51,7 @@ class AdjustRevenueReporter : RevenueAdReporter {
      * 异步加载收益配置
      */
     private fun loadRevenueConfig() {
-        CoroutineScope(Dispatchers.IO).launch {
+        configScope.launch {
             try {
                 // 首先尝试从Firebase Remote Config获取
                 val remoteConfigJson = ConfigRemoteManager.getString("rev_adj", "")
@@ -129,12 +131,12 @@ class AdjustRevenueReporter : RevenueAdReporter {
             return "admob_sdk"
         }
         
-        val randomValue = Random.nextInt(0, 101) // 0-100随机数
+        val randomValue = Random.nextInt(100)
         var cumulativeRate = 0
         
         for (config in revenueConfigs) {
             cumulativeRate += config.rate
-            if (randomValue <= cumulativeRate) {
+            if (randomValue < cumulativeRate) {
                 MetricsLogger.d("随机数: $randomValue, 选中配置: ${config.name}")
                 return config.name
             }
@@ -146,44 +148,12 @@ class AdjustRevenueReporter : RevenueAdReporter {
         return lastConfig.name
     }
 
-    /**
-     * 异步等待Adjust SDK初始化
-     * @return 是否初始化成功
-     */
-    private suspend fun waitForAdjustInit(): Boolean {
-        var attempts = 0
-        val maxAttempts = 10 // 最多尝试10次
-        val delayMs = 100L // 每次等待100ms
-
-        while (attempts < maxAttempts) {
-            if (AdjustTracker.checkInitialized()) {
-                return true
-            }
-            
-            MetricsLogger.d("Adjust SDK未就绪，等待中... (${attempts + 1}/$maxAttempts)")
-            delay(delayMs)
-            attempts++
-        }
-        
-        MetricsLogger.e("等待Adjust SDK初始化超时")
-        return false
-    }
-    
     override fun reportAdRevenue(adRevenueData: RevenueAdData) {
         try {
-            // 先检查Adjust SDK是否已初始化
-            var isInitialized = AdjustTracker.checkInitialized()
-            
-            // 如果没有初始化，则异步等待阻塞获取
-            if (!isInitialized) {
-                MetricsLogger.d("Adjust SDK未就绪，开始异步等待...")
-                isInitialized = runBlocking {
-                    waitForAdjustInit()
-                }
-            }
-            
-            if (!isInitialized) {
-                MetricsLogger.w("无法等待Adjust SDK初始化完成，跳过广告收益上报")
+            if (!AdjustTracker.checkInitialized()) {
+                // Reporter callbacks may arrive on the main thread; never wait for an SDK here.
+                // The ad orchestration layer can retry via its durable outbox in a later milestone.
+                MetricsLogger.w("Adjust SDK未初始化，跳过本次广告收益上报")
                 return
             }
             
@@ -214,5 +184,10 @@ class AdjustRevenueReporter : RevenueAdReporter {
         } catch (e: Exception) {
             MetricsLogger.e("上报广告收益数据到Adjust失败", e)
         }
+    }
+
+    private companion object {
+        // A single process scope prevents one unmanaged thread pool/job per reporter instance.
+        val configScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     }
 }

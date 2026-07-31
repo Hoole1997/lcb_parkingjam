@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 关卡地图独立语义色，避免页面状态与通用游戏色相互耦合。 -->
+    <color name="feature_game_level_select_surface">#F7FFF8E9</color>
+    <color name="feature_game_level_select_surface_pressed">#FFF1D5</color>
+    <color name="feature_game_level_select_text_primary">#24484A</color>
+    <color name="feature_game_level_select_text_secondary">#627A77</color>
+    <color name="feature_game_level_select_outline">#E4D3B7</color>
+    <color name="feature_game_level_select_route">#A7D8C8</color>
+    <color name="feature_game_level_select_route_edge">#FFF5E5</color>
+    <color name="feature_game_level_select_completed">#3D948A</color>
+    <color name="feature_game_level_select_current">#FF7E66</color>
+    <color name="feature_game_level_select_available">#FFF8EA</color>
+    <color name="feature_game_level_select_locked">#AEB8B5</color>
+    <color name="feature_game_level_select_hard">#906BC2</color>
+    <color name="feature_game_level_select_gold">#FFD15A</color>
+    <color name="feature_game_level_select_gold_dark">#D89B22</color>
+    <color name="feature_game_level_select_mint_deep">#2C817A</color>
+    <color name="feature_game_level_select_mint_pressed">#246D67</color>
+    <color name="feature_game_level_select_cream">#FFF8E9</color>
+    <color name="feature_game_level_select_lock_glyph">#52615F</color>
+    <color name="feature_game_level_select_shadow">#33213F3F</color>
+    <color name="feature_game_level_select_bottom_scrim">#EAF5EEDF</color>
+    <color name="feature_game_level_select_transparent">#00F5EEDF</color>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_game_level_select_back">Back to game home</string>
+    <string name="feature_game_level_select_title">Select Level</string>
+    <string name="feature_game_level_select_chapter">Sunny Block</string>
+    <string name="feature_game_level_select_stars_format">Stars %1$d / %2$d</string>
+    <string name="feature_game_level_select_stars_compact_format">%1$d / %2$d</string>
+    <string name="feature_game_level_select_continue_format">Continue Level %1$d</string>
+    <string name="feature_game_level_select_node_completed">Level %1$d, completed, %2$d stars</string>
+    <string name="feature_game_level_select_node_current">Level %1$d, current level</string>
+    <string name="feature_game_level_select_node_available">Level %1$d, available</string>
+    <string name="feature_game_level_select_node_locked">Level %1$d, locked</string>
+    <string name="feature_game_level_select_node_boss_suffix">, boss level</string>
+    <string name="feature_game_level_select_node_hard_suffix">, challenge level</string>
+    <string name="feature_game_level_select_boss_badge">BOSS</string>
+    <string name="feature_game_level_select_hard_badge">HARD</string>
+</resources>

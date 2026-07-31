@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="feature_game_level_select_screen_gutter">16dp</dimen>
+    <dimen name="feature_game_level_select_header_top_padding">12dp</dimen>
+    <dimen name="feature_game_level_select_header_bottom_padding">8dp</dimen>
+    <dimen name="feature_game_level_select_header_gap">8dp</dimen>
+    <dimen name="feature_game_level_select_back_size">56dp</dimen>
+    <dimen name="feature_game_level_select_header_height">64dp</dimen>
+    <dimen name="feature_game_level_select_header_radius">24dp</dimen>
+    <dimen name="feature_game_level_select_header_inner_padding">14dp</dimen>
+    <dimen name="feature_game_level_select_bottom_horizontal_padding">28dp</dimen>
+    <dimen name="feature_game_level_select_bottom_top_padding">26dp</dimen>
+    <dimen name="feature_game_level_select_bottom_bottom_padding">18dp</dimen>
+    <dimen name="feature_game_level_select_continue_height">58dp</dimen>
+    <dimen name="feature_game_level_select_continue_max_width">360dp</dimen>
+    <dimen name="feature_game_level_select_continue_radius">24dp</dimen>
+    <dimen name="feature_game_level_select_scroll_chrome_gap">12dp</dimen>
+    <dimen name="feature_game_level_select_node_size">68dp</dimen>
+    <dimen name="feature_game_level_select_boss_node_size">80dp</dimen>
+    <dimen name="feature_game_level_select_hard_node_size">76dp</dimen>
+    <dimen name="feature_game_level_select_node_touch_min">48dp</dimen>
+    <dimen name="feature_game_level_select_node_ring">6dp</dimen>
+    <dimen name="feature_game_level_select_route_width">34dp</dimen>
+    <dimen name="feature_game_level_select_route_edge_width">46dp</dimen>
+    <dimen name="feature_game_level_select_route_step">92dp</dimen>
+    <dimen name="feature_game_level_select_route_top_space">76dp</dimen>
+    <dimen name="feature_game_level_select_route_bottom_space">116dp</dimen>
+    <dimen name="feature_game_level_select_route_horizontal_inset">54dp</dimen>
+    <dimen name="feature_game_level_select_route_max_width">440dp</dimen>
+    <dimen name="feature_game_level_select_node_shadow_offset">4dp</dimen>
+    <dimen name="feature_game_level_select_node_shadow_extra">3dp</dimen>
+    <dimen name="feature_game_level_select_current_halo_width">5dp</dimen>
+</resources>

@@ -1,7 +1,6 @@
 package com.example.lcb.app.ad.renderer
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -11,8 +10,6 @@ import com.android.common.bill.ui.topon.ToponNativeAdStyle
 import com.example.lcb.app.R
 import com.thinkup.nativead.api.TUNativeMaterial
 import com.thinkup.nativead.api.TUNativePrepareInfo
-import java.net.HttpURLConnection
-import java.net.URL
 
 class DefaultToponNativeAdRenderer : ToponNativeAdRenderer {
 
@@ -32,7 +29,7 @@ class DefaultToponNativeAdRenderer : ToponNativeAdRenderer {
         tvCta.text = material.callToActionText
 
         material.iconImageUrl?.let { url ->
-            loadImageInto(url, ivIcon)
+            NativeAdImageLoader.loadIcon(url, ivIcon)
         }
     }
 
@@ -50,15 +47,4 @@ class DefaultToponNativeAdRenderer : ToponNativeAdRenderer {
         }
     }
 
-    private fun loadImageInto(url: String, imageView: ImageView) {
-        Thread {
-            runCatching {
-                val connection = URL(url).openConnection() as HttpURLConnection
-                connection.doInput = true
-                connection.connect()
-                val bitmap = connection.inputStream.use { BitmapFactory.decodeStream(it) }
-                imageView.post { imageView.setImageBitmap(bitmap) }
-            }
-        }.start()
-    }
 }

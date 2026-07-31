@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="feature_game_error">このレベルは現在読み込めません</string>
+    <string name="feature_game_retry">再読み込み</string>
+    <string name="feature_game_home_title">パーキング脱出</string>
+    <string name="feature_game_home_level_format">レベル %1$d を続ける</string>
+    <string name="feature_game_home_progress_format">メイン進行 %1$d / %2$d</string>
+    <string name="feature_game_home_progress_accessibility">メイン進行 %1$d / %2$d、スター %3$d / %4$d</string>
+    <string name="feature_game_home_star_progress_accessibility">スター進行 %1$d / %2$d</string>
+    <string name="feature_game_home_next">次のレベル</string>
+    <string name="feature_game_home_restart">レベルをやり直す</string>
+    <string name="feature_game_home_all_complete">現在のレベルをすべてクリアしました</string>
+    <string name="feature_game_home_chapter">エリア1・サニーブロック</string>
+    <string name="feature_game_home_chapter_short">サニーブロック</string>
+    <string name="feature_game_home_star_format">スター %1$d個</string>
+    <string name="feature_game_home_star_short_format">★ %1$d</string>
+    <string name="feature_game_home_select_levels">レベル選択</string>
+    <string name="feature_game_home_settings">設定</string>
+    <string name="feature_game_settings_title">ゲーム設定</string>
+    <string name="feature_game_settings_back">ゲームホームへ戻る</string>
+    <string name="feature_game_settings_language">言語</string>
+    <string name="feature_game_settings_language_accessibility">言語、現在は%1$s</string>
+    <string name="feature_game_settings_feedback">フィードバック</string>
+    <string name="feature_game_settings_feedback_subtitle">メールでお問い合わせ</string>
+    <string name="feature_game_settings_privacy">プライバシーポリシー</string>
+    <string name="feature_game_settings_privacy_subtitle">プライバシーとデータの詳細を見る</string>
+    <string name="feature_game_settings_version">バージョン</string>
+    <string name="feature_game_settings_version_accessibility">バージョン %1$s</string>
+    <string name="feature_game_level_select_back">ゲームホームへ戻る</string>
+    <string name="feature_game_level_select_title">レベル選択</string>
+    <string name="feature_game_level_select_chapter">サニーブロック</string>
+    <string name="feature_game_level_select_stars_format">スター %1$d / %2$d</string>
+    <string name="feature_game_level_select_stars_compact_format">%1$d / %2$d</string>
+    <string name="feature_game_level_select_continue_format">レベル %1$d を続ける</string>
+    <string name="feature_game_level_select_node_completed">レベル %1$d、クリア、スター %2$d個</string>
+    <string name="feature_game_level_select_node_current">レベル %1$d、現在のレベル</string>
+    <string name="feature_game_level_select_node_available">レベル %1$d、プレイ可能</string>
+    <string name="feature_game_level_select_node_locked">レベル %1$d、未解放</string>
+    <string name="feature_game_level_select_node_boss_suffix">、ボスレベル</string>
+    <string name="feature_game_level_select_node_hard_suffix">、チャレンジレベル</string>
+    <string name="feature_game_level_select_boss_badge">BOSS</string>
+    <string name="feature_game_level_select_hard_badge">HARD</string>
+</resources>

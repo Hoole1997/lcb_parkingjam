@@ -6,8 +6,6 @@ import com.google.gson.Gson
 import net.corekit.metrics.log.MetricsLogger
 import net.corekit.metrics.provider.MetricsModuleProvider
 import net.corekit.core.report.ReporterData
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 /**
  * Firebase Analytics 数据上报控制器
@@ -34,30 +32,6 @@ class FirebaseReporter : ReporterData {
             MetricsLogger.e("获取Firebase Analytics实例失败", e)
             null
         }
-    }
-
-    /**
-     * 异步等待获取Firebase Analytics实例
-     * @return Firebase Analytics实例
-     */
-    private suspend fun waitForAnalytics(): FirebaseAnalytics? {
-        var attempts = 0
-        val maxAttempts = 10 // 最多尝试10次
-        val delayMs = 100L // 每次等待100ms
-
-        while (attempts < maxAttempts) {
-            val analytics = retrieveFirebaseAnalytics()
-            if (analytics != null) {
-                return analytics
-            }
-
-            MetricsLogger.d("Firebase Analytics未就绪，等待中... (${attempts + 1}/$maxAttempts)")
-            delay(delayMs)
-            attempts++
-        }
-
-        MetricsLogger.e("等待Firebase Analytics超时，无法获取实例")
-        return null
     }
 
     /**
@@ -111,16 +85,7 @@ class FirebaseReporter : ReporterData {
      */
     override fun reportData(eventName: String, data: Map<String, Any>) {
         try {
-            // 先尝试直接获取Firebase Analytics实例
-            var analytics = retrieveFirebaseAnalytics()
-
-            // 如果获取为空，则异步等待阻塞获取
-            if (analytics == null) {
-                MetricsLogger.d("Firebase Analytics未就绪，开始异步等待...")
-                analytics = runBlocking {
-                    waitForAnalytics()
-                }
-            }
+            val analytics = retrieveFirebaseAnalytics()
 
             if (analytics == null) {
                 MetricsLogger.w("无法获取Firebase Analytics实例，跳过数据上报: $eventName")
@@ -146,16 +111,7 @@ class FirebaseReporter : ReporterData {
      */
     override fun setCommonParams(params: Map<String, Any>) {
         try {
-            // 先尝试直接获取Firebase Analytics实例
-            var analytics = retrieveFirebaseAnalytics()
-
-            // 如果获取为空，则异步等待阻塞获取
-            if (analytics == null) {
-                MetricsLogger.d("Firebase Analytics未就绪，开始异步等待...")
-                analytics = runBlocking {
-                    waitForAnalytics()
-                }
-            }
+            val analytics = retrieveFirebaseAnalytics()
 
             if (analytics == null) {
                 MetricsLogger.w("无法获取Firebase Analytics实例，跳过设置公共参数")
@@ -183,16 +139,7 @@ class FirebaseReporter : ReporterData {
      */
     override fun setUserParams(params: Map<String, Any>) {
         try {
-            // 先尝试直接获取Firebase Analytics实例
-            var analytics = retrieveFirebaseAnalytics()
-
-            // 如果获取为空，则异步等待阻塞获取
-            if (analytics == null) {
-                MetricsLogger.d("Firebase Analytics未就绪，开始异步等待...")
-                analytics = runBlocking {
-                    waitForAnalytics()
-                }
-            }
+            val analytics = retrieveFirebaseAnalytics()
 
             if (analytics == null) {
                 MetricsLogger.w("无法获取Firebase Analytics实例，跳过设置用户参数")

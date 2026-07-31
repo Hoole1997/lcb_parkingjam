@@ -54,8 +54,11 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "LCB_Template"
+rootProject.name = "LCB_ParkingJam"
 include(":app")
 //include(":bill")
 //include(":core")
 include(":metrics")
+include(":game-domain")
+include(":game-data")
+include(":feature-game")

@@ -1,0 +1,277 @@
+{
+  "schema_version": 2,
+  "level_id": "main_010",
+  "level_version": 2,
+  "rule_version": 2,
+  "chapter_id": "chapter_01",
+  "display_number": 10,
+  "mode": "boss",
+  "difficulty_tier": "d4",
+  "progression": {
+    "prerequisite_level_ids": [
+      "main_009"
+    ],
+    "skippable": false
+  },
+  "board": {
+    "width": 7,
+    "height": 8
+  },
+  "objective": {
+    "type": "boss_clear",
+    "required_vehicle_ids": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L"
+    ]
+  },
+  "vehicles": [
+    {
+      "vehicle_id": "A",
+      "type": "truck",
+      "anchor": {
+        "x": 0,
+        "y": 0
+      },
+      "direction": "west",
+      "length": 3,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "B",
+      "type": "car",
+      "anchor": {
+        "x": 3,
+        "y": 0
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    },
+    {
+      "vehicle_id": "C",
+      "type": "car",
+      "anchor": {
+        "x": 5,
+        "y": 0
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "purple"
+    },
+    {
+      "vehicle_id": "D",
+      "type": "truck",
+      "anchor": {
+        "x": 4,
+        "y": 1
+      },
+      "direction": "east",
+      "length": 3,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "E",
+      "type": "car",
+      "anchor": {
+        "x": 2,
+        "y": 1
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "yellow"
+    },
+    {
+      "vehicle_id": "F",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 1
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "purple"
+    },
+    {
+      "vehicle_id": "G",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 2
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "H",
+      "type": "car",
+      "anchor": {
+        "x": 2,
+        "y": 2
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "yellow"
+    },
+    {
+      "vehicle_id": "I",
+      "type": "car",
+      "anchor": {
+        "x": 5,
+        "y": 3
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    },
+    {
+      "vehicle_id": "J",
+      "type": "car",
+      "anchor": {
+        "x": 3,
+        "y": 3
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "yellow"
+    },
+    {
+      "vehicle_id": "K",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 4
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    },
+    {
+      "vehicle_id": "L",
+      "type": "car",
+      "anchor": {
+        "x": 2,
+        "y": 4
+      },
+      "direction": "west",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "purple"
+    }
+  ],
+  "exits": [
+    {
+      "exit_id": "east_full",
+      "direction": "east",
+      "offset": 0,
+      "length": 8,
+      "allowed_vehicle_types": [
+        "car",
+        "truck"
+      ]
+    },
+    {
+      "exit_id": "west_full",
+      "direction": "west",
+      "offset": 0,
+      "length": 8,
+      "allowed_vehicle_types": [
+        "car",
+        "truck"
+      ]
+    }
+  ],
+  "initial_safety": {
+    "mode": "unlimited"
+  },
+  "reward_profile_id": "boss_60",
+  "tutorial_directives": [],
+  "canonical_solution": [
+    "A",
+    "D",
+    "G",
+    "I",
+    "K",
+    "B",
+    "E",
+    "H",
+    "J",
+    "L",
+    "C",
+    "F"
+  ],
+  "difficulty_metrics": {
+    "vehicle_count": 12,
+    "required_count": 12,
+    "solution_steps": 12,
+    "dependency_depth": 3,
+    "safe_first_moves": 5,
+    "false_affordances": 7,
+    "mechanic_count": 0,
+    "board_density": 0.4643,
+    "branching_mean": 3.2
+  },
+  "content_tags": [
+    "boss",
+    "dependency"
+  ],
+  "parking_rules": {
+    "capacity": 4,
+    "overflow_policy": "reject_exit",
+    "orders": [
+      {
+        "order_id": "order_01",
+        "color_id": "coral",
+        "required_count": 3
+      },
+      {
+        "order_id": "order_02",
+        "color_id": "blue",
+        "required_count": 3
+      },
+      {
+        "order_id": "order_03",
+        "color_id": "yellow",
+        "required_count": 3
+      },
+      {
+        "order_id": "order_04",
+        "color_id": "purple",
+        "required_count": 3
+      }
+    ]
+  }
+}

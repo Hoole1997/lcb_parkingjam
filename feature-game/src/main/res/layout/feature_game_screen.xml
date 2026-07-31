@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/game_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/parking_courtyard_background"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/feature_game_hud_background"
+            android:elevation="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="6dp">
+
+            <TextView
+                android:id="@+id/level_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/feature_game_primary_text"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="第 1 关" />
+
+            <ImageButton
+                android:id="@+id/pause_button"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:background="@drawable/feature_game_icon_button_background"
+                android:contentDescription="@string/feature_game_pause"
+                android:padding="11dp"
+                android:src="@drawable/ic_feature_game_pause" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingStart="18dp"
+            android:paddingTop="14dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="24dp">
+
+            <com.example.lcb.parking.feature.game.ParkingBoardView
+                android:id="@+id/parking_board"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:importantForAccessibility="yes" />
+
+            <TextView
+                android:id="@+id/tutorial_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_margin="16dp"
+                android:background="@drawable/feature_game_tutorial_background"
+                android:elevation="4dp"
+                android:gravity="center"
+                android:lineSpacingExtra="2dp"
+                android:maxWidth="320dp"
+                android:textColor="@color/feature_game_primary_text"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:text="点击箭头朝向出口的车辆"
+                tools:visibility="visible" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/pause_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/feature_game_overlay"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/feature_game_panel_background"
+            android:elevation="8dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/feature_game_paused_title"
+                android:textColor="@color/feature_game_primary_text"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/resume_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/feature_game_button_background"
+                android:minHeight="48dp"
+                android:text="@string/feature_game_resume"
+                android:textAllCaps="false"
+                android:textColor="@color/feature_game_primary_text"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/exit_game_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/feature_game_secondary_button_background"
+                android:minHeight="48dp"
+                android:text="@string/feature_game_exit_game"
+                android:textAllCaps="false"
+                android:textColor="@color/feature_game_primary_text" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/result_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/feature_game_overlay"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/feature_game_panel_background"
+            android:elevation="8dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/feature_game_result_title"
+                android:textColor="@color/feature_game_primary_text"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/result_stars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:textColor="@color/feature_game_secondary_text"
+                android:textSize="18sp"
+                tools:text="获得 3 星" />
+
+            <Button
+                android:id="@+id/next_level_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/feature_game_button_background"
+                android:minHeight="48dp"
+                android:text="@string/feature_game_next_level"
+                android:textAllCaps="false"
+                android:textColor="@color/feature_game_primary_text"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </FrameLayout>
+</merge>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">车水马龙</string>
+    <string name="title_activity_main">车水马龙</string>
+    <string name="package_name">com.carout.parkingjam</string>
+    <string name="custom_url_scheme">com.carout.parkingjam</string>
+</resources>

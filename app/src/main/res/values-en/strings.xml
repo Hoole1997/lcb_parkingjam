@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Parking Rescue Crew</string>
+    <string name="privacy_title">Privacy and Data Choice</string>
+    <string name="privacy_message">Game progress is stored on this device. You can allow anonymous analytics, crash diagnostics, and advertising services, or use the essential mode without these optional services. Your choice does not affect main-level gameplay.</string>
+    <string name="privacy_allow_optional">Agree and Continue</string>
+    <string name="privacy_essential_only">Essential Mode Only</string>
+    <string name="privacy_save_failed">Your choice could not be saved. Essential mode will be used for this session.</string>
+    <string name="game_all_complete">All 30 levels in District 1 are complete!</string>
+    <string name="game_settings_title">Game Settings</string>
+    <string name="game_settings_message">Immersive display is enabled. Swipe from a screen edge to temporarily show system bars. The game pauses and saves when it moves to the background.</string>
+    <string name="game_settings_close">Got It</string>
+    <string name="settings_language_dialog_title">Choose Language</string>
+    <string name="settings_language_system">Follow System</string>
+    <string name="settings_language_simplified_chinese">简体中文</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_option_selected_accessibility">Selected: %1$s</string>
+    <string name="settings_version_format">v%1$s</string>
+    <string name="settings_feedback_subject">%1$s feedback (%2$s)</string>
+    <string name="settings_feedback_chooser">Choose an email app</string>
+    <string name="settings_feedback_unavailable">No email app is available</string>
+    <string name="settings_privacy_browser_unavailable">No browser is available to open the privacy policy</string>
+    <string name="tutorial_level_1">Tap a vehicle to move it in its facing direction</string>
+    <string name="tutorial_level_2">Vehicles can leave in different directions. Try several in a row</string>
+    <string name="tutorial_level_3">When blocked, move the front vehicle first</string>
+    <string name="tutorial_level_4">The two traffic flows can be handled alternately</string>
+    <string name="tutorial_level_5">Observe the blockers, then start with the front vehicles</string>
+</resources>

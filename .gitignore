@@ -1,17 +1,37 @@
+# Android Studio / IntelliJ IDEA
 *.iml
-.gradle
 .idea/
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+
+# Local Android configuration
 local.properties
 /build.config.properties
+/captures/
+/tmp/
+
+# Gradle and Kotlin caches
+.gradle/
+.kotlin/
+
+# Android build outputs (root project and all modules)
+**/build/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# Web toolchain outputs used by the game module
+**/node_modules/
+/carout/dist/
+**/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Script caches
+**/__pycache__/
+*.py[cod]

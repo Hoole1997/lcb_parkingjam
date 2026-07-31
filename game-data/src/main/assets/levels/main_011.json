@@ -1,0 +1,185 @@
+{
+  "schema_version": 2,
+  "level_id": "main_011",
+  "level_version": 2,
+  "rule_version": 2,
+  "chapter_id": "chapter_01",
+  "display_number": 11,
+  "mode": "normal",
+  "difficulty_tier": "d2",
+  "progression": {
+    "prerequisite_level_ids": [
+      "main_010"
+    ],
+    "skippable": false
+  },
+  "board": {
+    "width": 6,
+    "height": 8
+  },
+  "objective": {
+    "type": "clear_all",
+    "required_vehicle_ids": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ]
+  },
+  "vehicles": [
+    {
+      "vehicle_id": "A",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 0
+      },
+      "direction": "north",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "B",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 2
+      },
+      "direction": "north",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    },
+    {
+      "vehicle_id": "C",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 4
+      },
+      "direction": "north",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "purple"
+    },
+    {
+      "vehicle_id": "D",
+      "type": "car",
+      "anchor": {
+        "x": 1,
+        "y": 6
+      },
+      "direction": "south",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "E",
+      "type": "car",
+      "anchor": {
+        "x": 1,
+        "y": 4
+      },
+      "direction": "south",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "yellow"
+    },
+    {
+      "vehicle_id": "F",
+      "type": "car",
+      "anchor": {
+        "x": 2,
+        "y": 0
+      },
+      "direction": "north",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    }
+  ],
+  "exits": [
+    {
+      "exit_id": "north_full",
+      "direction": "north",
+      "offset": 0,
+      "length": 6,
+      "allowed_vehicle_types": [
+        "car"
+      ]
+    },
+    {
+      "exit_id": "south_full",
+      "direction": "south",
+      "offset": 0,
+      "length": 6,
+      "allowed_vehicle_types": [
+        "car"
+      ]
+    }
+  ],
+  "initial_safety": {
+    "mode": "unlimited"
+  },
+  "reward_profile_id": "main_default",
+  "tutorial_directives": [],
+  "canonical_solution": [
+    "A",
+    "D",
+    "F",
+    "B",
+    "E",
+    "C"
+  ],
+  "difficulty_metrics": {
+    "vehicle_count": 6,
+    "required_count": 6,
+    "solution_steps": 6,
+    "dependency_depth": 3,
+    "safe_first_moves": 3,
+    "false_affordances": 3,
+    "mechanic_count": 0,
+    "board_density": 0.25,
+    "branching_mean": 2.0
+  },
+  "content_tags": [
+    "normal",
+    "dependency"
+  ],
+  "parking_rules": {
+    "capacity": 4,
+    "overflow_policy": "reject_exit",
+    "orders": [
+      {
+        "order_id": "order_01",
+        "color_id": "coral",
+        "required_count": 2
+      },
+      {
+        "order_id": "order_02",
+        "color_id": "blue",
+        "required_count": 2
+      },
+      {
+        "order_id": "order_03",
+        "color_id": "yellow",
+        "required_count": 1
+      },
+      {
+        "order_id": "order_04",
+        "color_id": "purple",
+        "required_count": 1
+      }
+    ]
+  }
+}

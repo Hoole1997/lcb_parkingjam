@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">Equipe de Resgate no Trânsito</string>
+    <string name="privacy_title">Privacidade e dados</string>
+    <string name="privacy_message">O progresso do jogo é salvo neste dispositivo. Você pode permitir análises anônimas, diagnóstico de falhas e serviços de publicidade, ou usar o modo essencial sem esses serviços opcionais. Sua escolha não afeta o jogo principal.</string>
+    <string name="privacy_allow_optional">Concordar e continuar</string>
+    <string name="privacy_essential_only">Somente modo essencial</string>
+    <string name="privacy_save_failed">Não foi possível salvar sua escolha. O modo essencial será usado nesta sessão.</string>
+    <string name="game_all_complete">Você concluiu todas as 30 fases da área 1!</string>
+    <string name="game_settings_title">Configurações do jogo</string>
+    <string name="game_settings_message">A exibição imersiva está ativada. Deslize a partir da borda para mostrar temporariamente as barras do sistema. O jogo pausa e salva em segundo plano.</string>
+    <string name="game_settings_close">Entendi</string>
+    <string name="settings_language_dialog_title">Escolher idioma</string>
+    <string name="settings_language_system">Seguir o sistema</string>
+    <string name="settings_language_simplified_chinese">简体中文</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_option_selected_accessibility">Selecionado: %1$s</string>
+    <string name="settings_version_format">v%1$s</string>
+    <string name="settings_feedback_subject">Feedback sobre %1$s (%2$s)</string>
+    <string name="settings_feedback_chooser">Escolher aplicativo de e-mail</string>
+    <string name="settings_feedback_unavailable">Nenhum aplicativo de e-mail disponível</string>
+    <string name="settings_privacy_browser_unavailable">Nenhum navegador disponível para abrir a política de privacidade</string>
+    <string name="tutorial_level_1">Toque em um veículo para movê-lo na direção em que está apontando</string>
+    <string name="tutorial_level_2">Os veículos podem sair em várias direções. Tente vários em sequência</string>
+    <string name="tutorial_level_3">Quando estiver bloqueado, mova primeiro o veículo da frente</string>
+    <string name="tutorial_level_4">Alterne entre os dois fluxos de trânsito</string>
+    <string name="tutorial_level_5">Observe os bloqueios e comece pelos veículos da frente</string>
+</resources>

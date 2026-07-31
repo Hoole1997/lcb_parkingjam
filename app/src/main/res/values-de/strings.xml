@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">Parkplatz-Rettungsteam</string>
+    <string name="privacy_title">Datenschutz und Datenauswahl</string>
+    <string name="privacy_message">Der Spielfortschritt wird auf diesem Gerät gespeichert. Du kannst anonyme Statistiken, Absturzdiagnosen und Werbedienste erlauben oder den Basismodus ohne diese optionalen Dienste verwenden. Deine Wahl beeinflusst das Hauptspiel nicht.</string>
+    <string name="privacy_allow_optional">Zustimmen und fortfahren</string>
+    <string name="privacy_essential_only">Nur Basismodus</string>
+    <string name="privacy_save_failed">Deine Auswahl konnte nicht gespeichert werden. Für diese Sitzung wird der Basismodus verwendet.</string>
+    <string name="game_all_complete">Alle 30 Level in Gebiet 1 sind abgeschlossen!</string>
+    <string name="game_settings_title">Spieleinstellungen</string>
+    <string name="game_settings_message">Die immersive Anzeige ist aktiviert. Wische vom Bildschirmrand, um die Systemleisten kurz einzublenden. Im Hintergrund wird das Spiel pausiert und gespeichert.</string>
+    <string name="game_settings_close">Verstanden</string>
+    <string name="settings_language_dialog_title">Sprache auswählen</string>
+    <string name="settings_language_system">Systemsprache verwenden</string>
+    <string name="settings_language_simplified_chinese">简体中文</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_option_selected_accessibility">Ausgewählt: %1$s</string>
+    <string name="settings_version_format">v%1$s</string>
+    <string name="settings_feedback_subject">Feedback zu %1$s (%2$s)</string>
+    <string name="settings_feedback_chooser">E-Mail-App auswählen</string>
+    <string name="settings_feedback_unavailable">Keine E-Mail-App verfügbar</string>
+    <string name="settings_privacy_browser_unavailable">Kein Browser zum Öffnen der Datenschutzerklärung verfügbar</string>
+    <string name="tutorial_level_1">Tippe auf ein Fahrzeug, um es in Fahrtrichtung zu bewegen</string>
+    <string name="tutorial_level_2">Fahrzeuge können in verschiedene Richtungen ausfahren. Probiere mehrere nacheinander</string>
+    <string name="tutorial_level_3">Wenn der Weg blockiert ist, bewege zuerst das vordere Fahrzeug</string>
+    <string name="tutorial_level_4">Wechsle zwischen den beiden Verkehrsströmen</string>
+    <string name="tutorial_level_5">Prüfe die Blockaden und beginne mit den vorderen Fahrzeugen</string>
+</resources>

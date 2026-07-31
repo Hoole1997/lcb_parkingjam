@@ -14,9 +14,8 @@ import net.corekit.core.ads.RevenueAdReporter
 import net.corekit.core.utils.ConfigRemoteManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
 import java.io.IOException
 
@@ -27,7 +26,10 @@ import java.io.IOException
 class FirebaseRevenueReporter : RevenueAdReporter {
     
     private val gson = Gson()
+    @Volatile
     private var revenueConfigs: List<RevenueConfigItem> = emptyList()
+
+    @Volatile
     private var isConfigLoaded = false
     
     /**
@@ -41,7 +43,7 @@ class FirebaseRevenueReporter : RevenueAdReporter {
      * 异步加载收益配置
      */
     private fun loadRevenueConfig() {
-        CoroutineScope(Dispatchers.IO).launch {
+        configScope.launch {
             try {
                 // 首先尝试从Firebase Remote Config获取
                 val remoteConfigJson = ConfigRemoteManager.getString("rev_fir", "")
@@ -121,12 +123,12 @@ class FirebaseRevenueReporter : RevenueAdReporter {
             return "ad_impression"
         }
         
-        val randomValue = Random.nextInt(0, 101) // 0-100随机数
+        val randomValue = Random.nextInt(100)
         var cumulativeRate = 0
         
         for (config in revenueConfigs) {
             cumulativeRate += config.rate
-            if (randomValue <= cumulativeRate) {
+            if (randomValue < cumulativeRate) {
                 MetricsLogger.d("Firebase随机数: $randomValue, 选中配置: ${config.name}")
                 return config.name
             }
@@ -157,43 +159,9 @@ class FirebaseRevenueReporter : RevenueAdReporter {
         }
     }
 
-    /**
-     * 异步等待获取Firebase Analytics实例
-     * @return Firebase Analytics实例
-     */
-    private suspend fun waitForAnalytics(): FirebaseAnalytics? {
-        var attempts = 0
-        val maxAttempts = 10 // 最多尝试10次
-        val delayMs = 100L // 每次等待100ms
-
-        while (attempts < maxAttempts) {
-            val analytics = retrieveFirebaseAnalytics()
-            if (analytics != null) {
-                return analytics
-            }
-            
-            MetricsLogger.d("Firebase Analytics未就绪，等待中... (${attempts + 1}/$maxAttempts)")
-            delay(delayMs)
-            attempts++
-        }
-        
-        MetricsLogger.e("等待Firebase Analytics超时，无法获取实例")
-        return null
-    }
-    
-
     override fun reportAdRevenue(adRevenueData: RevenueAdData) {
         try {
-            // 先尝试直接获取Firebase Analytics实例
-            var analytics = retrieveFirebaseAnalytics()
-            
-            // 如果获取为空，则异步等待阻塞获取
-            if (analytics == null) {
-                MetricsLogger.d("Firebase Analytics未就绪，开始异步等待...")
-                analytics = runBlocking {
-                    waitForAnalytics()
-                }
-            }
+            val analytics = retrieveFirebaseAnalytics()
             
             if (analytics == null) {
                 MetricsLogger.w("无法获取Firebase Analytics实例，跳过广告收益上报")
@@ -221,5 +189,10 @@ class FirebaseRevenueReporter : RevenueAdReporter {
         } catch (e: Exception) {
             MetricsLogger.e("Firebase上报广告收益数据失败", e)
         }
+    }
+
+    private companion object {
+        // Shared application-lifetime scope avoids an unmanaged job per reporter construction.
+        val configScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     }
 }

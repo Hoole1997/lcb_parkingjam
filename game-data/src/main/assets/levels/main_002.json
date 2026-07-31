@@ -1,0 +1,136 @@
+{
+  "schema_version": 2,
+  "level_id": "main_002",
+  "level_version": 2,
+  "rule_version": 2,
+  "chapter_id": "chapter_01",
+  "display_number": 2,
+  "mode": "normal",
+  "difficulty_tier": "d1",
+  "progression": {
+    "prerequisite_level_ids": [
+      "main_001"
+    ],
+    "skippable": false
+  },
+  "board": {
+    "width": 5,
+    "height": 6
+  },
+  "objective": {
+    "type": "clear_all",
+    "required_vehicle_ids": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "vehicles": [
+    {
+      "vehicle_id": "A",
+      "type": "car",
+      "anchor": {
+        "x": 0,
+        "y": 0
+      },
+      "direction": "north",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    },
+    {
+      "vehicle_id": "B",
+      "type": "car",
+      "anchor": {
+        "x": 2,
+        "y": 2
+      },
+      "direction": "north",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "blue"
+    },
+    {
+      "vehicle_id": "C",
+      "type": "car",
+      "anchor": {
+        "x": 3,
+        "y": 5
+      },
+      "direction": "east",
+      "length": 2,
+      "required": true,
+      "tow_prohibited": false,
+      "color_id": "coral"
+    }
+  ],
+  "exits": [
+    {
+      "exit_id": "north_full",
+      "direction": "north",
+      "offset": 0,
+      "length": 5,
+      "allowed_vehicle_types": [
+        "car"
+      ]
+    },
+    {
+      "exit_id": "east_full",
+      "direction": "east",
+      "offset": 0,
+      "length": 6,
+      "allowed_vehicle_types": [
+        "car"
+      ]
+    }
+  ],
+  "initial_safety": {
+    "mode": "unlimited"
+  },
+  "reward_profile_id": "main_tutorial_hidden",
+  "tutorial_directives": [],
+  "canonical_solution": [
+    "A",
+    "B",
+    "C"
+  ],
+  "difficulty_metrics": {
+    "vehicle_count": 3,
+    "required_count": 3,
+    "solution_steps": 3,
+    "dependency_depth": 1,
+    "safe_first_moves": 3,
+    "false_affordances": 0,
+    "mechanic_count": 0,
+    "board_density": 0.2,
+    "branching_mean": 2.0
+  },
+  "content_tags": [
+    "normal",
+    "tutorial",
+    "flow"
+  ],
+  "parking_rules": {
+    "capacity": 2,
+    "overflow_policy": "reject_exit",
+    "orders": [
+      {
+        "order_id": "order_01",
+        "color_id": "coral",
+        "required_count": 1
+      },
+      {
+        "order_id": "order_02",
+        "color_id": "blue",
+        "required_count": 1
+      },
+      {
+        "order_id": "order_03",
+        "color_id": "coral",
+        "required_count": 1
+      }
+    ]
+  }
+}
