@@ -51,9 +51,9 @@ ext {
 
     // 应用版本配置
     app = [applicationId: "com.fluid.document.reader.tool",
-           compileSdk   : 35,
+           compileSdk   : 36,
            minSdk       : 26,
-           targetSdk    : 35,
+           targetSdk    : 36,
            versionCode  : 1,
            versionName  : "1.0.0",
            // 示例隐私页；正式发布前替换为应用自己的 HTTPS 地址。

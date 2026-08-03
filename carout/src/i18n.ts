@@ -8,7 +8,6 @@ export interface GameStrings {
   adUnavailable: string
   noRemovableCar: string
   noQueueOptimization: string
-  unlock: string
   refresh: string
   remove: string
   sort: string
@@ -36,7 +35,6 @@ const zhCn: GameStrings = {
   adUnavailable: '暂无可用广告，请稍后再试',
   noRemovableCar: '没有可消除的车',
   noQueueOptimization: '暂时没有可优化的排队',
-  unlock: '解锁',
   refresh: '刷新',
   remove: '消除',
   sort: '排序',
@@ -64,7 +62,6 @@ const en: GameStrings = {
   adUnavailable: 'No ad is available. Please try again later.',
   noRemovableCar: 'No car can be removed.',
   noQueueOptimization: 'The queue cannot be improved right now.',
-  unlock: 'UNLOCK',
   refresh: 'Reveal',
   remove: 'Remove',
   sort: 'Sort',
@@ -92,7 +89,6 @@ const ja: GameStrings = {
   adUnavailable: '利用できる広告がありません。後でもう一度お試しください。',
   noRemovableCar: '消去できる車がありません。',
   noQueueOptimization: '今は待機列を改善できません。',
-  unlock: '解放',
   refresh: '表示',
   remove: '消去',
   sort: '並べ替え',
@@ -120,7 +116,6 @@ const ko: GameStrings = {
   adUnavailable: '사용 가능한 광고가 없습니다. 잠시 후 다시 시도하세요.',
   noRemovableCar: '제거할 수 있는 차량이 없습니다.',
   noQueueOptimization: '지금은 대기열을 개선할 수 없습니다.',
-  unlock: '잠금 해제',
   refresh: '공개',
   remove: '제거',
   sort: '정렬',
@@ -148,7 +143,6 @@ const es: GameStrings = {
   adUnavailable: 'No hay anuncios disponibles. Inténtalo más tarde.',
   noRemovableCar: 'No se puede retirar ningún coche.',
   noQueueOptimization: 'La cola no se puede mejorar ahora.',
-  unlock: 'DESBLOQUEAR',
   refresh: 'Revelar',
   remove: 'Retirar',
   sort: 'Ordenar',
@@ -176,7 +170,6 @@ const ptBr: GameStrings = {
   adUnavailable: 'Nenhum anúncio disponível. Tente novamente mais tarde.',
   noRemovableCar: 'Nenhum carro pode ser removido.',
   noQueueOptimization: 'A fila não pode ser melhorada agora.',
-  unlock: 'DESBLOQUEAR',
   refresh: 'Revelar',
   remove: 'Remover',
   sort: 'Ordenar',
@@ -204,7 +197,6 @@ const fr: GameStrings = {
   adUnavailable: 'Aucune publicité disponible. Réessayez plus tard.',
   noRemovableCar: 'Aucune voiture ne peut être retirée.',
   noQueueOptimization: 'La file ne peut pas être améliorée pour le moment.',
-  unlock: 'DÉBLOQUER',
   refresh: 'Révéler',
   remove: 'Retirer',
   sort: 'Trier',
@@ -232,7 +224,6 @@ const de: GameStrings = {
   adUnavailable: 'Keine Werbung verfügbar. Bitte später erneut versuchen.',
   noRemovableCar: 'Kein Fahrzeug kann entfernt werden.',
   noQueueOptimization: 'Die Warteschlange kann gerade nicht verbessert werden.',
-  unlock: 'FREISCHALTEN',
   refresh: 'Aufdecken',
   remove: 'Entfernen',
   sort: 'Sortieren',

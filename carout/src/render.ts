@@ -97,6 +97,28 @@ export function roundRect(
   ctx.closePath()
 }
 
+/**
+ * 为固定宽度的 Canvas 标签设置单行自适应字体。
+ *
+ * 每次只测量最大字号一次，再按宽度比例计算目标字号，避免逐像素循环测量影响游戏帧率。
+ */
+function applyFittedCanvasFont(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  minFontSize: number,
+  maxFontSize: number,
+  fontFamily: string,
+  fontWeight = '900',
+) {
+  const safeMin = Math.max(1, Math.min(minFontSize, maxFontSize))
+  const safeMax = Math.max(safeMin, maxFontSize)
+  ctx.font = `${fontWeight} ${safeMax}px ${fontFamily}`
+  const measuredWidth = Math.max(1, ctx.measureText(text).width)
+  const fittedSize = Math.max(safeMin, Math.min(safeMax, safeMax * Math.max(1, maxWidth) / measuredWidth))
+  ctx.font = `${fontWeight} ${fittedSize}px ${fontFamily}`
+}
+
 // ------------------------------------------------------------------
 // 车辆精灵：以 (cx,cy) 为中心，车头朝 angle 方向（0 = 朝上），len 节车身
 // ------------------------------------------------------------------
@@ -896,7 +918,14 @@ export function drawQueueSign(
   ctx.font = `900 ${h * 0.43}px -apple-system, sans-serif`
   ctx.fillText(String(count), x + w / 2, y + h * 0.33)
   ctx.fillStyle = '#c83d36'
-  ctx.font = `900 ${h * 0.22}px -apple-system, "PingFang SC", sans-serif`
+  applyFittedCanvasFont(
+    ctx,
+    gameStrings.queueCount,
+    w * 0.68,
+    h * 0.13,
+    h * 0.22,
+    '-apple-system, "PingFang SC", sans-serif',
+  )
   ctx.fillText(gameStrings.queueCount, x + w / 2, y + h * 0.7)
 }
 

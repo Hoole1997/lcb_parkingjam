@@ -905,8 +905,8 @@ function drawPlayScene(t: number) {
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillText('AD', bx, by + 0.5)
-      // 简洁锁形图标和标签，保持与视觉稿一致。
-      const lockY = y0 + hh * 0.58
+      // 车槽宽度很窄，仅保留跨语言稳定的 AD 标识和锁图标；点击区域与广告逻辑不变。
+      const lockY = y0 + hh * 0.62
       ctx.strokeStyle = '#f4ead1'
       ctx.lineWidth = 2.4
       ctx.beginPath()
@@ -915,11 +915,6 @@ function drawPlayScene(t: number) {
       roundRect(ctx, bx - 7, lockY, 14, 12, 3)
       ctx.fillStyle = '#f4ead1'
       ctx.fill()
-      ctx.fillStyle = '#fff8e7'
-      ctx.font = `bold ${Math.max(9, L.slotW * 0.23)}px -apple-system, "PingFang SC", sans-serif`
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      ctx.fillText(gameStrings.unlock, bx, y0 + hh * 0.88)
       if (i === g.slotCount) {
         ui.unlock = { x: x0, y: y0, w: L.slotW, h: hh + 6 }
       }
