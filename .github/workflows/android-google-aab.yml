@@ -22,30 +22,16 @@ jobs:
 
     env:
       KEYSTORE_REPO_PATH: app/src/google/google-release.keystore
-      # The Android application module resolves relative signing paths from app/.
-      KEYSTORE_GRADLE_PATH: src/google/google-release.keystore
+      KEYSTORE_GRADLE_PATH: app/src/google/google-release.keystore
       KEYSTORE_ALIAS: google
       KEYSTORE_PASSWORD: google123456
       KEY_PASSWORD: google123456
       GRADLE_JVM_ARGS: -Xmx6144m -XX:MaxMetaspaceSize=1024m -XX:+UseParallelGC -Dfile.encoding=UTF-8
       KOTLIN_DAEMON_JVM_ARGS: -Xmx1024m
-      # Dedicated credentials are required because the Launcher SDK is hosted in another
-      # private GitHub Packages repository. Store both values as repository secrets so their
-      # configuration is consistent and neither credential is coupled to the workflow actor.
-      LAUNCHER_SDK_GITHUB_USER: ${{ secrets.LAUNCHER_SDK_GITHUB_USER }}
-      LAUNCHER_SDK_GITHUB_TOKEN: ${{ secrets.LAUNCHER_SDK_GITHUB_TOKEN }}
+      GITHUB_ACTOR: ${{ github.actor }}
+      PACKAGES_READ_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN }}
 
     steps:
-      - name: Verify Launcher SDK credentials
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ -z "${LAUNCHER_SDK_GITHUB_USER:-}" ] || [ -z "${LAUNCHER_SDK_GITHUB_TOKEN:-}" ]; then
-            echo "Missing Launcher SDK credentials." >&2
-            echo "Configure repository secrets LAUNCHER_SDK_GITHUB_USER and LAUNCHER_SDK_GITHUB_TOKEN." >&2
-            exit 1
-          fi
-
       - name: Checkout main
         uses: actions/checkout@v4
         with:
@@ -58,8 +44,14 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      # 使用独立目录并禁用缓存，避免 GitHub runner 恢复到失效的 immutable transform。
+      - name: Configure isolated Gradle home
+        run: echo "GRADLE_USER_HOME=$RUNNER_TEMP/gradle-home" >> "$GITHUB_ENV"
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
 
       - name: Ensure google release keystore exists
         id: ensure_keystore
@@ -86,6 +78,7 @@ jobs:
             -validity 36500 \
             -dname "CN=Google Release, OU=Mobile, O=GitHub Actions, L=San Francisco, S=CA, C=US"
 
+          ls -l "$KEYSTORE_REPO_PATH"
           echo "created=true" >> "$GITHUB_OUTPUT"
 
       - name: Commit generated keystore to main
@@ -151,7 +144,7 @@ jobs:
             "-Dkotlin.daemon.jvmargs=${KOTLIN_DAEMON_JVM_ARGS}"
             --max-workers=1
             --no-parallel
-            --build-cache
+            --no-build-cache
           )
 
           VERSION_NAME="$(./gradlew -q :app:printGoogleReleaseVersionName --console=plain "${COMMON_GRADLE_ARGS[@]}")"
@@ -161,19 +154,17 @@ jobs:
           echo "aab_name=$AAB_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Build signed googleRelease AAB
-        env:
-          ANDROID_SIGNING_STORE_FILE: ${{ env.KEYSTORE_GRADLE_PATH }}
-          ANDROID_SIGNING_STORE_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
-          ANDROID_SIGNING_KEY_ALIAS: ${{ env.KEYSTORE_ALIAS }}
-          ANDROID_SIGNING_KEY_PASSWORD: ${{ env.KEY_PASSWORD }}
         run: |
           set -euo pipefail
+          test -s "$KEYSTORE_GRADLE_PATH"
+          ls -l "$KEYSTORE_GRADLE_PATH"
+
           COMMON_GRADLE_ARGS=(
             "-Dorg.gradle.jvmargs=${GRADLE_JVM_ARGS}"
             "-Dkotlin.daemon.jvmargs=${KOTLIN_DAEMON_JVM_ARGS}"
             --max-workers=1
             --no-parallel
-            --build-cache
+            --no-build-cache
           )
           BUILD_ARGS=(
             -Pandroid.release.optimizeEnabled=false

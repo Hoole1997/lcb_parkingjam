@@ -1,12 +1,10 @@
 package com.example.lcb.app
 
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
-import com.android.common.bill.ads.ext.AdShowExt
+import com.example.lcb.app.utils.showRewardedAd
 import com.example.lcb.parking.feature.game.GameRewardedAdPlacement
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.launch
+import net.corekit.core.controller.AdSlotSwitchController
 
 /**
  * 应用层的激励广告端口。
@@ -22,8 +20,13 @@ internal fun interface GameRewardedAdGateway {
     )
 }
 
-/** 当前 Launcher/Bill 广告实现；奖励只以 SDK 的 onRewardEarned 回调为准。 */
-internal object LauncherGameRewardedAdGateway : GameRewardedAdGateway {
+/**
+ * BusinessAdExt 激励广告实现。
+ *
+ * 广告位开关关闭或开关读取异常时直接发放奖励；开关开启时只使用统一封装方法的成功回调，
+ * 不直接依赖底层广告 SDK。
+ */
+internal object BusinessGameRewardedAdGateway : GameRewardedAdGateway {
     override fun show(
         activity: FragmentActivity,
         placement: GameRewardedAdPlacement,
@@ -34,25 +37,22 @@ internal object LauncherGameRewardedAdGateway : GameRewardedAdGateway {
             return
         }
 
-        activity.lifecycleScope.launch {
-            val rewardEarned = AtomicBoolean(false)
-            try {
-                LauncherSdkGateway.beforeShowAd(activity)
-                AdShowExt.showRewardedAd(
-                    activity = activity,
-                    onRewardEarned = { rewardEarned.set(true) },
-                    // 道具入口明确标记为 AD，只允许真正的激励广告完成奖励，不降级成插屏。
-                    competeWithInterstitial = false,
-                    position = placement.adPosition,
-                )
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (_: Exception) {
-                // SDK 加载、展示或回调异常均按未获得奖励处理，绝不提前发放道具。
-            }
-            if (!activity.isFinishing && !activity.isDestroyed) {
-                onResult(rewardEarned.get())
-            }
+        val resultDelivered = AtomicBoolean(false)
+        fun complete(success: Boolean) {
+            if (resultDelivered.compareAndSet(false, true)) onResult(success)
         }
+
+        val adEnabled = try {
+            AdSlotSwitchController.isEnabled(placement.adSlotSwitchKey)
+        } catch (_: Exception) {
+            // 远程开关异常按关闭处理，不能阻断玩家主动触发的道具和车位功能。
+            false
+        }
+        if (!adEnabled) {
+            complete(true)
+            return
+        }
+
+        activity.showRewardedAd(position = placement.adSlotSwitchKey, call = { success -> complete(success) })
     }
 }

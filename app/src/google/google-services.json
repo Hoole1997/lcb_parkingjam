@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "1012507371143",
-    "project_id": "agfa90615218-7f3a0-gp",
-    "storage_bucket": "agfa90615218-7f3a0-gp.firebasestorage.app"
+    "project_number": "956460141492",
+    "project_id": "agcdd7cd9ea3-3f319-gp",
+    "storage_bucket": "agcdd7cd9ea3-3f319-gp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1012507371143:android:e81fb5088bb420eae03a22",
+        "mobilesdk_app_id": "1:956460141492:android:df032ea2f79b3b8b1180e1",
         "android_client_info": {
-          "package_name": "com.fluid.document.reader.tool"
+          "package_name": "com.parkingjam.carpuzzle"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDk113nYuiHpmTB7q46zWEIJig332YmsA0"
+          "current_key": "AIzaSyDVPVt8URF2nSSO2zCcm1hIpM-5EIlCgV8"
         }
       ],
       "services": {

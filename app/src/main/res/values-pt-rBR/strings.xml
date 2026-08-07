@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Equipe de Resgate no Trânsito</string>
-    <string name="privacy_title">Privacidade e dados</string>
-    <string name="privacy_message">O progresso do jogo é salvo neste dispositivo. Você pode permitir análises anônimas, diagnóstico de falhas e serviços de publicidade, ou usar o modo essencial sem esses serviços opcionais. Sua escolha não afeta o jogo principal.</string>
-    <string name="privacy_allow_optional">Concordar e continuar</string>
-    <string name="privacy_essential_only">Somente modo essencial</string>
-    <string name="privacy_save_failed">Não foi possível salvar sua escolha. O modo essencial será usado nesta sessão.</string>
     <string name="game_all_complete">Você concluiu todas as 30 fases da área 1!</string>
     <string name="game_settings_title">Configurações do jogo</string>
     <string name="game_settings_message">A exibição imersiva está ativada. Deslize a partir da borda para mostrar temporariamente as barras do sistema. O jogo pausa e salva em segundo plano.</string>

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Parking Rescue Crew</string>
-    <string name="privacy_title">Privacy and Data Choice</string>
-    <string name="privacy_message">Game progress is stored on this device. You can allow anonymous analytics, crash diagnostics, and advertising services, or use the essential mode without these optional services. Your choice does not affect main-level gameplay.</string>
-    <string name="privacy_allow_optional">Agree and Continue</string>
-    <string name="privacy_essential_only">Essential Mode Only</string>
-    <string name="privacy_save_failed">Your choice could not be saved. Essential mode will be used for this session.</string>
     <string name="game_all_complete">All 30 levels in District 1 are complete!</string>
     <string name="game_settings_title">Game Settings</string>
     <string name="game_settings_message">Immersive display is enabled. Swipe from a screen edge to temporarily show system bars. The game pauses and saves when it moves to the background.</string>

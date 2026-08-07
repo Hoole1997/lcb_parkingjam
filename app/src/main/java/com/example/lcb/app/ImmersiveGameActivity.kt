@@ -13,6 +13,8 @@ abstract class ImmersiveGameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // AndroidX 要求应用语言 API 在 Activity.onCreate() 之后调用；首次同步发生在内容绘制前。
+        AppLanguageController.synchronize(this)
         enableEdgeToEdge()
     }
 
@@ -26,6 +28,8 @@ abstract class ImmersiveGameActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // 应用使用英文兜底时，系统语言变化未必改变当前 Configuration；恢复前主动重新同步。
+        AppLanguageController.synchronize(this)
         if (::immersiveWindowController.isInitialized) immersiveWindowController.onResume()
     }
 

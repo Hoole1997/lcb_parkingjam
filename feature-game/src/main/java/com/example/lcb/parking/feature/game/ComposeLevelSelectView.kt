@@ -27,6 +27,7 @@ class ComposeLevelSelectView @JvmOverloads constructor(
     }
 
     private var hostCallbacks: HostCallbacks? = null
+    private var interactionEnabledState by mutableStateOf(true)
     private var uiState by mutableStateOf(
         LevelSelectUiState(
             starProgress = StarProgressUiState(earned = 0, maximum = 1),
@@ -47,6 +48,7 @@ class ComposeLevelSelectView @JvmOverloads constructor(
             val palette = LocalParkingGamePalette.current
             ComposeLevelSelectScreen(
                 state = uiState,
+                navigationEnabled = interactionEnabledState,
                 onBackRequested = { hostCallbacks?.onBackRequested() },
                 onLevelSelected = { level -> hostCallbacks?.onLevelSelected(level) },
                 onContinueRequested = { level -> hostCallbacks?.onContinueRequested(level) },
@@ -57,6 +59,12 @@ class ComposeLevelSelectView @JvmOverloads constructor(
 
     fun setHostCallbacks(callbacks: HostCallbacks?) {
         hostCallbacks = callbacks
+    }
+
+    /** 宿主开始页面跳转后立即关闭关卡入口，防止双指或快速连点重复启动游戏页。 */
+    @MainThread
+    fun setNavigationEnabled(enabled: Boolean) {
+        if (interactionEnabledState != enabled) interactionEnabledState = enabled
     }
 
     @MainThread

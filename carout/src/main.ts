@@ -13,8 +13,7 @@ import {
   drawQueueSign,
   drawQueueRail,
   drawButton,
-  drawPill,
-  gameSpriteAssetsSettled,
+  drawContainedText,
   roundRect,
   hit,
   type Rect,
@@ -22,13 +21,20 @@ import {
 import { sound } from './audio'
 import { gameStrings } from './i18n'
 import { loadProgress, saveProgress } from './storage'
+import { loadSoundEnabled, saveSoundEnabled } from './preferences'
 import {
   exitToNativeGameHome,
   hostMode,
   notifyNativeFirstFrameRendered,
+  notifyNativeGameAction,
   notifyNativeLevelCompleted,
+  notifyNativeLevelResult,
+  notifyNativeLevelStarted,
+  notifyNativeResultAction,
   completeNativeRewardedAd,
   requestNativeRewardedAd,
+  showNativeToast,
+  type GameLevelEntry,
   type RewardedAdPlacement,
 } from './native-bridge'
 
@@ -39,13 +45,8 @@ const ctx = canvas.getContext('2d')!
 // 既能保持生成稿的质感，也不会把关卡数据烘焙进一张不可维护的整屏图片。
 const gardenBackground = new Image()
 let gardenBackgroundReady = false
-let gardenBackgroundSettled = false
 gardenBackground.addEventListener('load', () => {
   gardenBackgroundReady = true
-  gardenBackgroundSettled = true
-})
-gardenBackground.addEventListener('error', () => {
-  gardenBackgroundSettled = true
 })
 gardenBackground.src = './game-garden-background-v2.png'
 
@@ -72,6 +73,7 @@ const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 type Scene = 'menu' | 'select' | 'play'
 let scene: Scene = 'menu'
 const progress = loadProgress()
+sound.enabled = loadSoundEnabled()
 
 let levelIdx = 0
 let game: JamGame | null = null
@@ -79,6 +81,7 @@ let curLevel: JamLevel | null = null
 let over: 'win' | 'lose' | null = null
 let overTime = 0
 let rewardedAdPending = false
+let navigationPending = false
 
 // ------------------------------------------------------------------
 // 布局
@@ -239,7 +242,6 @@ interface Particle {
   grav: number
 }
 let particles: Particle[] = []
-let toast: { text: string; until: number } | null = null
 let hostPaused = false
 
 function burst(x: number, y: number, color: string, n = 8, speed = 160) {
@@ -279,11 +281,12 @@ function confetti() {
 // ------------------------------------------------------------------
 // 关卡流程
 // ------------------------------------------------------------------
-function startLevel(i: number) {
+function startLevel(i: number, entry: GameLevelEntry) {
   levelIdx = i
   curLevel = generateLevel(i)
   game = new JamGame(curLevel)
   over = null
+  navigationPending = false
   carAnims.clear()
   bump = null
   runners = []
@@ -292,6 +295,8 @@ function startLevel(i: number) {
   dispatchTimer = 0
   computeLayout()
   scene = 'play'
+  // 初始化已经同步完成，Canvas 从此刻起可接受操作；Android 负责首帧前的事件排队。
+  notifyNativeLevelStarted(levelIdx + 1, entry)
 }
 
 // 车阵局部（未旋转）中心坐标
@@ -480,6 +485,7 @@ function checkWin() {
   if (game?.won && !over) {
     over = 'win'
     overTime = now()
+    notifyNativeLevelResult(levelIdx + 1, 'win')
     progress.done[levelIdx] = true
     progress.unlocked = Math.max(progress.unlocked, Math.min(levelIdx + 2, LEVEL_COUNT))
     saveProgress(progress)
@@ -493,6 +499,7 @@ function checkLose() {
   if (game?.lost && !over) {
     over = 'lose'
     overTime = now()
+    notifyNativeLevelResult(levelIdx + 1, 'fail')
     sound.lose()
   }
 }
@@ -526,7 +533,7 @@ function tapJamCar(x: number, y: number) {
   if (!car) return
 
   if (game.freeSlot() < 0) {
-    toast = { text: gameStrings.noParkingSpace, until: now() + 1.2 }
+    showNativeToast(gameStrings.noParkingSpace)
     sound.crash()
     return
   }
@@ -551,25 +558,22 @@ function tapJamCar(x: number, y: number) {
 
 // ---- 激励广告道具 ----
 function requestRewardedAction(placement: RewardedAdPlacement, applyReward: () => boolean) {
-  if (rewardedAdPending) {
-    toast = { text: gameStrings.adLoading, until: now() + 1.2 }
-    return
-  }
+  // SDK 内部会根据缓存状态自行展示原生 Loading；Web 层只负责防重入和消费最终回调。
+  if (rewardedAdPending) return
   rewardedAdPending = true
-  toast = { text: gameStrings.adLoading, until: now() + 8 }
   const requested = requestNativeRewardedAd(placement, (rewardEarned) => {
     rewardedAdPending = false
     if (!rewardEarned) {
-      toast = { text: gameStrings.adNotCompleted, until: now() + 1.6 }
+      showNativeToast(gameStrings.adNotCompleted, 'long')
       return
     }
     if (!applyReward()) {
-      toast = { text: gameStrings.toolNotNeeded, until: now() + 1.6 }
+      showNativeToast(gameStrings.toolNotNeeded)
     }
   })
   if (!requested) {
     rewardedAdPending = false
-    toast = { text: gameStrings.adUnavailable, until: now() + 1.6 }
+    showNativeToast(gameStrings.adUnavailable)
   }
 }
 
@@ -578,7 +582,9 @@ function useRefresh() {
   requestRewardedAction('tool_refresh', () => {
     if (!game || over) return false
     sound.click()
-    startLevel(levelIdx)
+    // 只有广告奖励成功且刷新真正执行时，才算一次被接受的功能操作。
+    notifyNativeGameAction(levelIdx + 1, 'refresh')
+    startLevel(levelIdx, 'refresh')
     return true
   })
 }
@@ -587,7 +593,7 @@ function useRemove() {
   // 先验证当前一定存在目标，避免用户看完广告却无法得到效果。
   if (!game || over) return
   if (!game.canRemoveBlocker()) {
-    toast = { text: gameStrings.noRemovableCar, until: now() + 1.2 }
+    showNativeToast(gameStrings.noRemovableCar)
     return
   }
   requestRewardedAction('tool_remove', () => {
@@ -603,7 +609,7 @@ function useRemove() {
 function useSort() {
   if (!game || over) return
   if (!game.canSortQueue()) {
-    toast = { text: gameStrings.noQueueOptimization, until: now() + 1.4 }
+    showNativeToast(gameStrings.noQueueOptimization)
     return
   }
   requestRewardedAction('tool_sort', () => {
@@ -614,13 +620,20 @@ function useSort() {
   })
 }
 
-function unlockSlot(placement: 'slot_unlock' | 'slot_rescue' = 'slot_unlock') {
-  if (!game || (over && placement !== 'slot_rescue')) return
+function unlockSlot(rescueFromFullState = false) {
+  if (!game || (over && !rescueFromFullState)) return
   if (game.slotCount >= MAX_SLOTS) return
+  // 第 6、7 车位分别走独立广告位，Android 可按广告位 Key 单独控制开关。
+  const placement: RewardedAdPlacement = game.slotCount <= 5 ? 'slot_6' : 'slot_7'
   requestRewardedAction(placement, () => {
     if (!game || game.slotCount >= MAX_SLOTS) return false
     game.addSlot()
-    if (placement === 'slot_rescue' && over === 'lose') over = null
+    if (rescueFromFullState && over === 'lose') {
+      over = null
+      // 失败已经结束上一统计周期；广告救援继续作为一次 retry 周期，避免一轮开始
+      // 同时产生 fail 和 win 两个结果。
+      notifyNativeLevelStarted(levelIdx + 1, 'retry')
+    }
     sound.click()
     burst(L.slotXs[game.slotCount - 1], L.slotYc, '#ffd43b', 12, 150)
     return true
@@ -631,6 +644,7 @@ const ui: Record<string, Rect> = {}
 
 function handleTap(x: number, y: number) {
   sound.unlock()
+  if (navigationPending) return
   if (scene === 'menu') {
     if (hit(ui.play, x, y)) {
       sound.click()
@@ -648,54 +662,74 @@ function handleTap(x: number, y: number) {
       const r = ui['lv' + i]
       if (r && hit(r, x, y) && i < progress.unlocked) {
         sound.click()
-        startLevel(i)
+        startLevel(i, 'level_select')
         return
       }
     }
     return
   }
   // play
-  if (rewardedAdPending) {
-    toast = { text: gameStrings.adLoading, until: now() + 1.2 }
-    return
-  }
+  if (rewardedAdPending) return
   if (over === 'win') {
+    const isFinalLevel = levelIdx + 1 >= LEVEL_COUNT
     if (hit(ui.next, x, y)) {
       sound.click()
-      if (levelIdx + 1 < LEVEL_COUNT) startLevel(levelIdx + 1)
-      else if (!exitToNativeGameHome()) scene = 'select'
-    } else if (hit(ui.menu, x, y)) {
+      if (!isFinalLevel) {
+        notifyNativeResultAction(levelIdx + 1, 'win', 'next_level')
+        startLevel(levelIdx + 1, 'next_level')
+      } else {
+        navigationPending = true
+        notifyNativeResultAction(levelIdx + 1, 'win', 'home')
+        if (!exitToNativeGameHome()) {
+          navigationPending = false
+          scene = 'select'
+        }
+      }
+    } else if (!isFinalLevel && ui.menu && hit(ui.menu, x, y)) {
       sound.click()
-      if (!exitToNativeGameHome()) scene = 'select'
+      navigationPending = true
+      notifyNativeResultAction(levelIdx + 1, 'win', 'home')
+      if (!exitToNativeGameHome()) {
+        navigationPending = false
+        scene = 'select'
+      }
     }
     return
   }
   if (over === 'lose') {
     if (ui.rescue && hit(ui.rescue, x, y)) {
-      unlockSlot('slot_rescue')
+      unlockSlot(true)
       return
     }
     if (hit(ui.retry, x, y)) {
       sound.click()
-      startLevel(levelIdx)
+      notifyNativeResultAction(levelIdx + 1, 'fail', 'retry')
+      startLevel(levelIdx, 'retry')
     } else if (hit(ui.menu, x, y)) {
       sound.click()
-      if (!exitToNativeGameHome()) scene = 'select'
+      navigationPending = true
+      notifyNativeResultAction(levelIdx + 1, 'fail', 'home')
+      if (!exitToNativeGameHome()) {
+        navigationPending = false
+        scene = 'select'
+      }
     }
     return
   }
   if (hit(ui.back, x, y)) {
     sound.click()
-    if (!exitToNativeGameHome()) scene = 'select'
-    return
-  }
-  if (ui.restart && hit(ui.restart, x, y)) {
-    sound.click()
-    startLevel(levelIdx)
+    navigationPending = true
+    notifyNativeGameAction(levelIdx + 1, 'back')
+    if (!exitToNativeGameHome()) {
+      navigationPending = false
+      scene = 'select'
+    }
     return
   }
   if (ui.soundBtn && hit(ui.soundBtn, x, y)) {
     sound.enabled = !sound.enabled
+    saveSoundEnabled(sound.enabled)
+    notifyNativeGameAction(levelIdx + 1, sound.enabled ? 'sound_on' : 'sound_off')
     sound.click()
     return
   }
@@ -765,7 +799,7 @@ function drawSlotPlanter(cx: number, bottom: number, size: number) {
   }
 }
 
-type TopControlIcon = 'back' | 'restart' | 'sound'
+type TopControlIcon = 'back' | 'sound'
 
 function drawCreamCard(r: Rect, radius: number) {
   roundRect(ctx, r.x, r.y + Math.max(3, r.h * 0.09), r.w, r.h, radius)
@@ -801,16 +835,6 @@ function drawTopControl(r: Rect, icon: TopControlIcon) {
     ctx.moveTo(cx - s * 0.75, cy)
     ctx.lineTo(cx - s * 0.12, cy + s * 0.62)
     ctx.stroke()
-  } else if (icon === 'restart') {
-    ctx.beginPath()
-    ctx.arc(cx, cy, s * 0.82, -Math.PI * 0.55, Math.PI * 1.12)
-    ctx.stroke()
-    ctx.beginPath()
-    ctx.moveTo(cx - s * 0.92, cy - s * 0.36)
-    ctx.lineTo(cx - s * 0.86, cy + s * 0.34)
-    ctx.lineTo(cx - s * 0.28, cy - s * 0.02)
-    ctx.closePath()
-    ctx.fill()
   } else {
     ctx.beginPath()
     ctx.moveTo(cx - s * 0.86, cy - s * 0.34)
@@ -1100,10 +1124,9 @@ function drawPlayScene(t: number) {
   const topY = Math.max(10, H * 0.018)
   const topGap = Math.max(4, W * 0.012)
   ui.back = { x: W * 0.038, y: topY, w: topSize, h: topSize }
-  ui.restart = { x: ui.back.x + topSize + topGap, y: topY, w: topSize, h: topSize }
-  ui.soundBtn = { x: ui.restart.x + topSize + topGap, y: topY, w: topSize, h: topSize }
+  // 顶部只保留导航和声音控制；刷新统一从底部激励道具栏触发。
+  ui.soundBtn = { x: ui.back.x + topSize + topGap, y: topY, w: topSize, h: topSize }
   drawTopControl(ui.back, 'back')
-  drawTopControl(ui.restart, 'restart')
   drawTopControl(ui.soundBtn, 'sound')
 
   const titleR: Rect = {
@@ -1118,16 +1141,6 @@ function drawPlayScene(t: number) {
   ctx.font = `900 ${Math.min(25, titleR.h * 0.48)}px -apple-system, "PingFang SC", sans-serif`
   ctx.fillStyle = '#70452b'
   ctx.fillText(gameStrings.level(levelIdx + 1), titleR.x + titleR.w / 2, titleR.y + titleR.h * 0.52)
-
-  // ---- 提示 ----
-  if (toast && t < toast.until) {
-    drawPill(
-      ctx,
-      { x: W / 2 - 90, y: L.roadY + L.roadH + 14, w: 180, h: 36 },
-      toast.text,
-      { bg: 'rgba(200,50,50,0.9)', font: 17 },
-    )
-  }
 
   // ---- 底部道具栏 ----
   drawToolbar(t)
@@ -1258,11 +1271,13 @@ function drawToolbar(t: number) {
 function drawWinOverlay(t: number) {
   const p = Math.min((t - overTime) / 0.35, 1)
   const e = easeOut(p)
+  const isFinalLevel = levelIdx + 1 >= LEVEL_COUNT
   ctx.fillStyle = `rgba(10,15,30,${0.55 * e})`
   ctx.fillRect(0, 0, W, H)
 
   const pw = Math.min(W * 0.82, 330)
-  const ph = 250
+  // 最终关没有“下一关”，弹窗收紧为单一主操作，避免出现两个相同的返回首页按钮。
+  const ph = isFinalLevel ? 200 : 250
   const px = (W - pw) / 2
   const py = (H - ph) / 2 - 30 + (1 - e) * 60
   roundRect(ctx, px, py, pw, ph, 24)
@@ -1272,25 +1287,34 @@ function drawWinOverlay(t: number) {
   ctx.lineWidth = 3
   ctx.stroke()
 
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillStyle = '#f1c40f'
-  ctx.font = 'bold 30px -apple-system, "PingFang SC", sans-serif'
-  ctx.fillText(gameStrings.winTitle, W / 2, py + 50)
-
-  ctx.fillStyle = 'rgba(255,255,255,0.78)'
-  ctx.font = '16px -apple-system, "PingFang SC", sans-serif'
-  ctx.textAlign = 'center'
-  ctx.fillText(gameStrings.winMessage, W / 2, py + 96)
+  drawContainedText(ctx, { x: px + 18, y: py + 24, w: pw - 36, h: 52 }, gameStrings.winTitle, {
+    color: '#f1c40f',
+    minFontSize: 18,
+    maxFontSize: 30,
+    maxLines: 1,
+    horizontalPadding: 4,
+  })
+  drawContainedText(ctx, { x: px + 22, y: py + 76, w: pw - 44, h: 40 }, gameStrings.winMessage, {
+    color: 'rgba(255,255,255,0.78)',
+    minFontSize: 11,
+    maxFontSize: 16,
+    maxLines: 2,
+    horizontalPadding: 4,
+  })
 
   const bw = pw - 60
   ui.next = { x: px + 30, y: py + 124, w: bw, h: 52 }
-  drawButton(ctx, ui.next, levelIdx + 1 < LEVEL_COUNT ? gameStrings.nextLevel : gameStrings.home, {
+  drawButton(ctx, ui.next, isFinalLevel ? gameStrings.home : gameStrings.nextLevel, {
     bg: '#27ae60',
     font: 20,
   })
-  ui.menu = { x: px + 30, y: py + 186, w: bw, h: 44 }
-  drawButton(ctx, ui.menu, gameStrings.home, { bg: '#34495e', font: 17 })
+  if (isFinalLevel) {
+    // ui 在帧间复用，必须清掉上一关遗留的次级按钮热区。
+    delete ui.menu
+  } else {
+    ui.menu = { x: px + 30, y: py + 186, w: bw, h: 44 }
+    drawButton(ctx, ui.menu, gameStrings.home, { bg: '#34495e', font: 17 })
+  }
 }
 
 function drawLoseOverlay(t: number) {
@@ -1311,14 +1335,21 @@ function drawLoseOverlay(t: number) {
   ctx.lineWidth = 3
   ctx.stroke()
 
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillStyle = '#ff8787'
-  ctx.font = 'bold 28px -apple-system, "PingFang SC", sans-serif'
-  ctx.fillText(gameStrings.fullTitle, W / 2, py + 52)
-  ctx.fillStyle = 'rgba(255,255,255,0.7)'
-  ctx.font = '15px -apple-system, "PingFang SC", sans-serif'
-  ctx.fillText(gameStrings.fullMessage, W / 2, py + 92)
+  // 标题和说明分别以弹框内部矩形作为真实布局容器，不能只依赖中心坐标绘制。
+  drawContainedText(ctx, { x: px + 18, y: py + 24, w: pw - 36, h: 52 }, gameStrings.fullTitle, {
+    color: '#ff8787',
+    minFontSize: 18,
+    maxFontSize: 28,
+    maxLines: 1,
+    horizontalPadding: 4,
+  })
+  drawContainedText(ctx, { x: px + 22, y: py + 76, w: pw - 44, h: 40 }, gameStrings.fullMessage, {
+    color: 'rgba(255,255,255,0.7)',
+    minFontSize: 11,
+    maxFontSize: 15,
+    maxLines: 2,
+    horizontalPadding: 4,
+  })
 
   const bw = pw - 60
   let by = py + 122
@@ -1468,8 +1499,9 @@ function frame() {
     else if (scene === 'select') drawSelect(t)
     else drawPlayScene(t)
     drawParticles(t, dt)
-    // 原生窗口只在完整素材首帧后接管；图片失败也算 settled，届时使用矢量降级绘制。
-    if (!firstFrameReported && gardenBackgroundSettled && gameSpriteAssetsSettled()) {
+    // 首帧以“Canvas 已完成可交互场景绘制”为准，不再阻塞等待大图冷解码。素材未完成时
+    // 已有渐变背景和矢量车辆兜底，后续图片 load 会在连续帧中自然替换，避免冷启动空白。
+    if (!firstFrameReported) {
       firstFrameReported = true
       notifyNativeFirstFrameRendered()
     }
@@ -1492,7 +1524,8 @@ window.CaroutHost = {
 const dbg = new URLSearchParams(location.search)
 const requestedLevel = dbg.get('level') ?? dbg.get('lv')
 if (requestedLevel) {
-  startLevel(Math.min(Math.max(+requestedLevel, 1), LEVEL_COUNT) - 1)
+  const requestedEntry = dbg.get('entry') === 'level_select' ? 'level_select' : 'home'
+  startLevel(Math.min(Math.max(+requestedLevel, 1), LEVEL_COUNT) - 1, requestedEntry)
   // 暴露调试钩子：定位被堵车辆的屏幕坐标
   ;(window as any).__dbg = {
     game: () => game,
@@ -1533,5 +1566,5 @@ if (requestedLevel) {
     }, 450)
   }
 }
-if (hostMode && !requestedLevel) startLevel(0)
+if (hostMode && !requestedLevel) startLevel(0, 'home')
 frame()

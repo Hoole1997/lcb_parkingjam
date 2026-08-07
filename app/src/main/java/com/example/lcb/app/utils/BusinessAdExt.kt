@@ -64,3 +64,25 @@ fun FragmentActivity.loadInterstitial(
         }
     }
 }
+
+fun FragmentActivity.showRewardedAd(
+    condition: () -> Boolean = { true },
+    call: (Boolean) -> Unit,
+    position: String? = null
+) {
+    lifecycleScope.launch {
+        try {
+            if (!condition.invoke()) {
+                call.invoke(false)
+                return@launch
+            }
+            LauncherSdkGateway.beforeShowAd(this@showRewardedAd)
+            when (AdShowExt.showRewardedAd(this@showRewardedAd, position = position)) {
+                is AdResult.Success -> call.invoke(true)
+                is AdResult.Failure -> call.invoke(false)
+            }
+        } catch (_: Exception) {
+            call.invoke(false)
+        }
+    }
+}

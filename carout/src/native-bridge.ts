@@ -4,18 +4,42 @@ import type { Progress } from './storage'
 interface AndroidCaroutBridge {
   loadProgress(): string
   saveProgress(progressJson: string): void
+  loadSoundEnabled(): boolean
+  saveSoundEnabled(enabled: boolean): void
   firstFrameRendered(sessionId: number): void
   exitToGameHome(): void
   levelCompleted(levelNumber: number): void
+  showToast(message: string, duration: NativeToastDuration): void
+  levelStarted(levelNumber: number, entry: GameLevelEntry): void
+  gameActionClicked(levelNumber: number, action: GameActionType): void
+  levelResult(levelNumber: number, result: GameResultType): void
+  resultActionClicked(
+    levelNumber: number,
+    result: GameResultType,
+    action: GameResultActionType,
+  ): void
   requestRewardedAd(placement: RewardedAdPlacement, requestId: number): void
 }
+
+export type GameLevelEntry =
+  | 'home'
+  | 'level_select'
+  | 'next_level'
+  | 'retry'
+  | 'restart'
+  | 'refresh'
+
+export type GameActionType = 'back' | 'restart' | 'refresh' | 'sound_on' | 'sound_off'
+export type GameResultType = 'win' | 'fail'
+export type GameResultActionType = 'next_level' | 'retry' | 'home'
+export type NativeToastDuration = 'short' | 'long'
 
 export type RewardedAdPlacement =
   | 'tool_refresh'
   | 'tool_remove'
   | 'tool_sort'
-  | 'slot_unlock'
-  | 'slot_rescue'
+  | 'slot_6'
+  | 'slot_7'
 
 declare global {
   interface Window {
@@ -49,6 +73,25 @@ export function saveNativeProgress(progress: Progress) {
   }
 }
 
+/** 同步读取原生偏好，null 表示当前不是原生宿主或桥接不可用。 */
+export function loadNativeSoundEnabled(): boolean | null {
+  if (!hostMode || !window.CaroutNative) return null
+  try {
+    return window.CaroutNative.loadSoundEnabled()
+  } catch {
+    return null
+  }
+}
+
+export function saveNativeSoundEnabled(enabled: boolean) {
+  if (!hostMode || !window.CaroutNative) return
+  try {
+    window.CaroutNative.saveSoundEnabled(enabled)
+  } catch {
+    // 偏好桥接异常不影响当前页面内的声音切换。
+  }
+}
+
 export function exitToNativeGameHome(): boolean {
   if (!hostMode || !window.CaroutNative) return false
   try {
@@ -65,6 +108,60 @@ export function notifyNativeLevelCompleted(levelNumber: number) {
     window.CaroutNative.levelCompleted(levelNumber)
   } catch {
     // 广告或埋点桥不可用不影响结算。
+  }
+}
+
+/** 所有局内轻提示交由 Android Toast 展示，Canvas 不再维护提示层和计时状态。 */
+export function showNativeToast(
+  message: string,
+  duration: NativeToastDuration = 'short',
+): boolean {
+  if (!hostMode || !window.CaroutNative || !message.trim()) return false
+  try {
+    window.CaroutNative.showToast(message, duration)
+    return true
+  } catch {
+    return false
+  }
+}
+
+export function notifyNativeLevelStarted(levelNumber: number, entry: GameLevelEntry) {
+  if (!hostMode || !window.CaroutNative) return
+  try {
+    window.CaroutNative.levelStarted(levelNumber, entry)
+  } catch {
+    // 埋点桥异常不影响关卡初始化。
+  }
+}
+
+export function notifyNativeGameAction(levelNumber: number, action: GameActionType) {
+  if (!hostMode || !window.CaroutNative) return
+  try {
+    window.CaroutNative.gameActionClicked(levelNumber, action)
+  } catch {
+    // 埋点桥异常不影响用户操作。
+  }
+}
+
+export function notifyNativeLevelResult(levelNumber: number, result: GameResultType) {
+  if (!hostMode || !window.CaroutNative) return
+  try {
+    window.CaroutNative.levelResult(levelNumber, result)
+  } catch {
+    // 埋点桥异常不影响胜负结算。
+  }
+}
+
+export function notifyNativeResultAction(
+  levelNumber: number,
+  result: GameResultType,
+  action: GameResultActionType,
+) {
+  if (!hostMode || !window.CaroutNative) return
+  try {
+    window.CaroutNative.resultActionClicked(levelNumber, result, action)
+  } catch {
+    // 埋点桥异常不影响结果页导航。
   }
 }
 

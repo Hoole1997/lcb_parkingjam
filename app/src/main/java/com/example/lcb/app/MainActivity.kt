@@ -1,17 +1,11 @@
 package com.example.lcb.app
 
 import android.content.ComponentCallbacks2
-import android.content.DialogInterface
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.lifecycleScope
+import com.example.lcb.parking.feature.game.GameLevelEntry
 import com.example.lcb.parking.feature.game.GameHomePrimaryAction
 import com.example.lcb.parking.feature.game.GameHomeView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.launch
 
 /**
  * 游戏首页 Activity。
@@ -23,7 +17,8 @@ class MainActivity : ImmersiveGameActivity() {
 
     private lateinit var gameHome: GameHomeView
     private lateinit var progressStore: CaroutProgressStore
-    private lateinit var privacyChoiceStore: PrivacyChoiceStore
+    private lateinit var pageAnalytics: PageFirstFrameAnalyticsController
+    private val analyticsReporter = GameAnalyticsReporter()
     private var progress = CaroutProgressSnapshot(1, emptySet())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,10 +26,14 @@ class MainActivity : ImmersiveGameActivity() {
         setImmersiveContentView(R.layout.activity_main_home)
 
         progressStore = CaroutProgressStore(applicationContext)
-        privacyChoiceStore = PrivacyChoiceStore(applicationContext)
         gameHome = findViewById(R.id.game_home)
+        pageAnalytics = PageFirstFrameAnalyticsController(
+            rootView = findViewById(R.id.main),
+            session = PageAnalyticsSession(AnalyticsPage.GAME_HOME, analyticsReporter),
+        )
         gameHome.setOnPrimaryActionListener(::handlePrimaryAction)
         gameHome.setOnLevelSelectClickListener {
+            analyticsReporter.homeLevelSelectClick()
             GameActivityNavigator.openLevelSelect(this)
         }
         gameHome.setOnSettingsClickListener {
@@ -47,7 +46,6 @@ class MainActivity : ImmersiveGameActivity() {
                 override fun handleOnBackPressed() = LauncherSdkGateway.returnToLauncher()
             },
         )
-        resolvePrivacyChoice()
     }
 
     override fun onResume() {
@@ -56,6 +54,17 @@ class MainActivity : ImmersiveGameActivity() {
         progress = progressStore.load()
         gameHome.render(progress.toHomeUiState())
         gameHome.setHostActive(true)
+        pageAnalytics.onResume()
+    }
+
+    override fun onPause() {
+        if (::pageAnalytics.isInitialized) pageAnalytics.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        if (::pageAnalytics.isInitialized) pageAnalytics.onDestroy()
+        super.onDestroy()
     }
 
     override fun onTrimMemory(level: Int) {
@@ -68,67 +77,8 @@ class MainActivity : ImmersiveGameActivity() {
 
     private fun handlePrimaryAction(action: GameHomePrimaryAction) {
         if (action == GameHomePrimaryAction.NONE) return
-        GameActivityNavigator.openGame(this, progress.continueLevel)
-    }
-
-    private fun resolvePrivacyChoice() {
-        lifecycleScope.launch {
-            val choice = try {
-                privacyChoiceStore.read()
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (_: Exception) {
-                PrivacyChoice.ESSENTIAL_ONLY
-            }
-            when (choice) {
-                PrivacyChoice.UNKNOWN -> showPrivacyChoiceDialog()
-                PrivacyChoice.ESSENTIAL_ONLY -> Unit
-                PrivacyChoice.OPTIONAL_SDKS_ALLOWED -> OptionalSdkLifecycleGateway.enableAfterConsent()
-            }
-        }
-    }
-
-    private fun showPrivacyChoiceDialog() {
-        if (isFinishing || isDestroyed) return
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.privacy_title)
-            .setMessage(R.string.privacy_message)
-            .setCancelable(false)
-            .setPositiveButton(R.string.privacy_allow_optional, null)
-            .setNegativeButton(R.string.privacy_essential_only, null)
-            .create()
-        dialog.setOnShowListener {
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                persistPrivacyChoice(dialog, PrivacyChoice.OPTIONAL_SDKS_ALLOWED)
-            }
-            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener {
-                persistPrivacyChoice(dialog, PrivacyChoice.ESSENTIAL_ONLY)
-            }
-        }
-        dialog.show()
-    }
-
-    private fun persistPrivacyChoice(dialog: AlertDialog, choice: PrivacyChoice) {
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = false
-        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).isEnabled = false
-        lifecycleScope.launch {
-            val saved = try {
-                privacyChoiceStore.write(choice)
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (_: Exception) {
-                false
-            }
-            if (saved && choice == PrivacyChoice.OPTIONAL_SDKS_ALLOWED) {
-                OptionalSdkLifecycleGateway.enableAfterConsent()
-            } else if (!saved) {
-                Toast.makeText(
-                    this@MainActivity,
-                    R.string.privacy_save_failed,
-                    Toast.LENGTH_SHORT,
-                ).show()
-            }
-            dialog.dismiss()
-        }
+        val targetLevel = progress.continueLevel
+        analyticsReporter.homePrimaryClick(targetLevel)
+        GameActivityNavigator.openGame(this, targetLevel, GameLevelEntry.HOME)
     }
 }

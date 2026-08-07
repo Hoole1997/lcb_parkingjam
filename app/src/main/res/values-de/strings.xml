@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Parkplatz-Rettungsteam</string>
-    <string name="privacy_title">Datenschutz und Datenauswahl</string>
-    <string name="privacy_message">Der Spielfortschritt wird auf diesem Gerät gespeichert. Du kannst anonyme Statistiken, Absturzdiagnosen und Werbedienste erlauben oder den Basismodus ohne diese optionalen Dienste verwenden. Deine Wahl beeinflusst das Hauptspiel nicht.</string>
-    <string name="privacy_allow_optional">Zustimmen und fortfahren</string>
-    <string name="privacy_essential_only">Nur Basismodus</string>
-    <string name="privacy_save_failed">Deine Auswahl konnte nicht gespeichert werden. Für diese Sitzung wird der Basismodus verwendet.</string>
     <string name="game_all_complete">Alle 30 Level in Gebiet 1 sind abgeschlossen!</string>
     <string name="game_settings_title">Spieleinstellungen</string>
     <string name="game_settings_message">Die immersive Anzeige ist aktiviert. Wische vom Bildschirmrand, um die Systemleisten kurz einzublenden. Im Hintergrund wird das Spiel pausiert und gespeichert.</string>

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Équipe de secours routier</string>
-    <string name="privacy_title">Confidentialité et données</string>
-    <string name="privacy_message">La progression est enregistrée sur cet appareil. Vous pouvez autoriser les statistiques anonymes, le diagnostic des pannes et les services publicitaires, ou utiliser le mode essentiel sans ces services facultatifs. Votre choix ne modifie pas le jeu principal.</string>
-    <string name="privacy_allow_optional">Accepter et continuer</string>
-    <string name="privacy_essential_only">Mode essentiel uniquement</string>
-    <string name="privacy_save_failed">Votre choix n’a pas pu être enregistré. Le mode essentiel sera utilisé pour cette session.</string>
     <string name="game_all_complete">Les 30 niveaux de la zone 1 sont terminés !</string>
     <string name="game_settings_title">Paramètres du jeu</string>
     <string name="game_settings_message">Le mode immersif est activé. Faites glisser depuis un bord pour afficher temporairement les barres système. Le jeu se met en pause et se sauvegarde en arrière-plan.</string>

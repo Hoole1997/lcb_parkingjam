@@ -46,7 +46,16 @@ class CaroutGameView @JvmOverloads constructor(
         /** Web 层保存后的完整进度 JSON，宿主应做校验再持久化。 */
         fun onProgressChanged(progressJson: String)
 
+        /** 局内声音偏好由应用层持久化，玩法页面不直接依赖 Android 存储 API。 */
+        fun onSoundEnabledChanged(enabled: Boolean)
+
         fun onLevelCompleted(levelNumber: Int)
+
+        /** 网页只提供本地化业务文案，具体提示组件由应用层统一展示。 */
+        fun onToastRequested(message: String, duration: GameToastDuration)
+
+        /** 类型化玩法事件由应用层统一转换成统计 SDK 埋点。 */
+        fun onTelemetry(event: GameTelemetryEvent)
 
         /**
          * 请求应用层展示激励广告。只有用户真正获得奖励时才回传 true；游戏层据此执行
@@ -69,15 +78,24 @@ class CaroutGameView @JvmOverloads constructor(
     private var callbacks: HostCallbacks? = null
     @Volatile
     private var initialProgressJson: String = DEFAULT_PROGRESS_JSON
+    @Volatile
+    private var initialSoundEnabled: Boolean = true
     private var loadedOrLoadingLevel: Int? = null
     private var hostActive = false
     private var pageReady = false
+    private var firstVisualFrameCommitted = false
+    private var recoveryRevealActive = false
+    private var recoveryReloaded = false
+    private var loadedUrl: String? = null
     private var released = false
     private val activeRewardRequestIds = mutableSetOf<Int>()
 
     init {
         Log.i(LOG_TAG, "view#$instanceId created webView#$webViewInstanceId")
-        setBackgroundColor(Color.rgb(238, 246, 222))
+        // 池中的 WebView 可能仍保留上一局的合成画面。新宿主先隐藏它，并让 Activity 的
+        // 庭院背景负责加载兜底；当前文档的视觉帧真正提交后才恢复显示。
+        setBackgroundColor(Color.TRANSPARENT)
+        webView.alpha = HIDDEN_ALPHA
         addView(
             webView,
             LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT),
@@ -87,19 +105,24 @@ class CaroutGameView @JvmOverloads constructor(
 
     /** 在首次加载前绑定宿主。之后的进度变更由桥接回调持续同步。 */
     @MainThread
-    fun bind(initialProgressJson: String, callbacks: HostCallbacks) {
+    fun bind(
+        initialProgressJson: String,
+        initialSoundEnabled: Boolean,
+        callbacks: HostCallbacks,
+    ) {
         this.callbacks = callbacks
         this.initialProgressJson = initialProgressJson
+        this.initialSoundEnabled = initialSoundEnabled
     }
 
     /** 加载独立游戏 Activity 需要展示的关卡。相同关卡不会被重复加载。 */
     @MainThread
-    fun showLevel(levelNumber: Int) {
-        ensureLevelLoaded(levelNumber.coerceAtLeast(1))
+    fun showLevel(levelNumber: Int, entry: GameLevelEntry) {
+        ensureLevelLoaded(levelNumber.coerceAtLeast(1), entry)
     }
 
     @MainThread
-    private fun ensureLevelLoaded(levelNumber: Int) {
+    private fun ensureLevelLoaded(levelNumber: Int, entry: GameLevelEntry) {
         if (released) return
         if (loadedOrLoadingLevel == levelNumber) {
             Log.i(LOG_TAG, "view#$instanceId skip duplicate level=$levelNumber")
@@ -107,14 +130,50 @@ class CaroutGameView @JvmOverloads constructor(
         }
         loadedOrLoadingLevel = levelNumber
         pageReady = false
-        // Activity 负责页面显隐，WebView 只加载当前关卡，不再参与跨 Activity 的首帧切换。
+        firstVisualFrameCommitted = false
+        recoveryRevealActive = false
+        recoveryReloaded = false
+        webView.alpha = HIDDEN_ALPHA
         webView.onResume()
-        val url = gameUrl(levelNumber)
+        val url = gameUrl(levelNumber, entry)
+        loadedUrl = url
         Log.i(
             LOG_TAG,
             "view#$instanceId webView#$webViewInstanceId loadUrl level=$levelNumber url=$url",
         )
         webView.loadUrl(url)
+    }
+
+    /**
+     * 首帧门禁超时后的自恢复入口。
+     *
+     * WebView 不能继续保持透明，否则页面即使稍后完成也只会露出 Activity 的庭院背景。
+     * 已完成页面优先重新请求合成确认；主文档或 JS 未就绪时只自动重载一次，避免无限重试。
+     */
+    @MainThread
+    fun recoverFromFirstFrameTimeout() {
+        if (released || firstVisualFrameCommitted) return
+        recoveryRevealActive = true
+        Log.w(
+            LOG_TAG,
+            "view#$instanceId first-frame recovery pageReady=$pageReady url=${webView.url}",
+        )
+        webView.onResume()
+        webView.alpha = VISIBLE_ALPHA
+        webView.invalidate()
+
+        // 即使 onPageFinished 尚未到达，也先探测 JS 运行时；避免文档其实已初始化时重载，
+        // 从而重复发送 level_start 等桥接事件。
+        webView.evaluateJavascript(RECOVERY_READY_SCRIPT) { ready ->
+            post {
+                if (released || firstVisualFrameCommitted) return@post
+                if (ready == "true") {
+                    awaitFirstVisualFrame(instanceId)
+                } else {
+                    reloadForRecovery()
+                }
+            }
+        }
     }
 
     /** 宿主完成校验后回写规范化进度，保证下一次页面重载不会读取旧快照。 */
@@ -204,6 +263,10 @@ class CaroutGameView @JvmOverloads constructor(
             ): Boolean = !request.url.isTrustedGameUrl()
 
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+                // loadUrl 是异步的；在新文档开始时再次清除可见状态，避免复用容器闪出旧帧。
+                pageReady = false
+                firstVisualFrameCommitted = false
+                view.alpha = if (recoveryRevealActive) VISIBLE_ALPHA else HIDDEN_ALPHA
                 Log.i(LOG_TAG, "view#$instanceId pageStarted url=$url")
             }
 
@@ -248,6 +311,56 @@ class CaroutGameView @JvmOverloads constructor(
         webView.evaluateJavascript(script, null)
     }
 
+    @MainThread
+    private fun reloadForRecovery() {
+        if (released || recoveryReloaded) return
+        val url = loadedUrl ?: return
+        recoveryReloaded = true
+        pageReady = false
+        Log.w(LOG_TAG, "view#$instanceId retry cold document url=$url")
+        webView.stopLoading()
+        webView.loadUrl(url)
+    }
+
+    /**
+     * Canvas 的 requestAnimationFrame 已执行不代表该帧已经进入 Android 的 WebView 合成层。
+     * VisualStateCallback 保证当前 Web 内容可在下一次 View 绘制中呈现，再在下一帧显示
+     * WebView 并通知 Activity 放开首帧门，消除冷启动时序竞争造成的偶发空白。
+     */
+    @MainThread
+    private fun awaitFirstVisualFrame(sessionId: Long) {
+        if (released || sessionId != instanceId || firstVisualFrameCommitted) return
+        webView.postVisualStateCallback(
+            sessionId,
+            object : WebView.VisualStateCallback() {
+                override fun onComplete(requestId: Long) {
+                    post {
+                        if (
+                            released ||
+                            requestId != instanceId ||
+                            firstVisualFrameCommitted
+                        ) {
+                            return@post
+                        }
+                        firstVisualFrameCommitted = true
+                        webView.alpha = VISIBLE_ALPHA
+                        webView.invalidate()
+                        // alpha 和已提交的 Web 内容在同一个显示帧生效后，宿主才允许窗口交接。
+                        webView.postOnAnimation {
+                            if (!released && firstVisualFrameCommitted) {
+                                Log.i(
+                                    LOG_TAG,
+                                    "view#$instanceId first visual frame committed",
+                                )
+                                callbacks?.onFirstFrameRendered()
+                            }
+                        }
+                    }
+                }
+            },
+        )
+    }
+
     /** 奖励结果统一回到主线程，并以 requestId 保证同一广告最多结算一次。 */
     @MainThread
     private fun completeRewardedAdRequest(requestId: Int, rewardEarned: Boolean) {
@@ -257,8 +370,8 @@ class CaroutGameView @JvmOverloads constructor(
         )
     }
 
-    private fun gameUrl(levelNumber: Int): String =
-        buildCaroutGameUrl(levelNumber, instanceId, languageTag)
+    private fun gameUrl(levelNumber: Int, entry: GameLevelEntry): String =
+        buildCaroutGameUrl(levelNumber, instanceId, languageTag, entry)
 
     private fun Uri.isTrustedGameUrl(): Boolean =
         scheme == "https" && host == APP_ASSETS_HOST && path.orEmpty().startsWith(ASSET_PATH)
@@ -273,10 +386,20 @@ class CaroutGameView @JvmOverloads constructor(
         }
 
         @JavascriptInterface
+        fun loadSoundEnabled(): Boolean = initialSoundEnabled
+
+        @JavascriptInterface
+        fun saveSoundEnabled(enabled: Boolean) {
+            // 同步更新当前宿主快照，页面自恢复重载时也能立即读到刚刚保存的状态。
+            initialSoundEnabled = enabled
+            post { callbacks?.onSoundEnabledChanged(enabled) }
+        }
+
+        @JavascriptInterface
         fun firstFrameRendered(sessionId: Long) {
             // 复用 WebView 时旧文档可能仍有排队回调，只接受当前 CaroutGameView 的会话。
             if (sessionId != instanceId) return
-            post { callbacks?.onFirstFrameRendered() }
+            post { awaitFirstVisualFrame(sessionId) }
         }
 
         @JavascriptInterface
@@ -287,6 +410,55 @@ class CaroutGameView @JvmOverloads constructor(
         @JavascriptInterface
         fun levelCompleted(levelNumber: Int) {
             post { callbacks?.onLevelCompleted(levelNumber) }
+        }
+
+        @JavascriptInterface
+        fun showToast(message: String, durationValue: String) {
+            val duration = GameToastDuration.fromBridgeValue(durationValue) ?: return
+            val safeMessage = message.trim().take(MAX_TOAST_MESSAGE_LENGTH)
+            if (safeMessage.isEmpty()) return
+            post { callbacks?.onToastRequested(safeMessage, duration) }
+        }
+
+        @JavascriptInterface
+        fun levelStarted(levelNumber: Int, entryValue: String) {
+            val entry = GameLevelEntry.fromBridgeValue(entryValue) ?: return
+            post {
+                callbacks?.onTelemetry(GameTelemetryEvent.LevelStarted(levelNumber, entry))
+            }
+        }
+
+        @JavascriptInterface
+        fun gameActionClicked(levelNumber: Int, actionValue: String) {
+            val action = GameActionType.fromBridgeValue(actionValue) ?: return
+            post {
+                callbacks?.onTelemetry(GameTelemetryEvent.ActionClicked(levelNumber, action))
+            }
+        }
+
+        @JavascriptInterface
+        fun levelResult(levelNumber: Int, resultValue: String) {
+            val result = GameResultType.fromBridgeValue(resultValue) ?: return
+            post {
+                callbacks?.onTelemetry(GameTelemetryEvent.LevelResult(levelNumber, result))
+            }
+        }
+
+        @JavascriptInterface
+        fun resultActionClicked(levelNumber: Int, resultValue: String, actionValue: String) {
+            val result = GameResultType.fromBridgeValue(resultValue) ?: return
+            val action = GameResultActionType.fromBridgeValue(actionValue) ?: return
+            val validCombination = when (action) {
+                GameResultActionType.NEXT_LEVEL -> result == GameResultType.WIN
+                GameResultActionType.RETRY -> result == GameResultType.FAIL
+                GameResultActionType.HOME -> true
+            }
+            if (!validCombination) return
+            post {
+                callbacks?.onTelemetry(
+                    GameTelemetryEvent.ResultActionClicked(levelNumber, result, action),
+                )
+            }
         }
 
         @JavascriptInterface
@@ -324,6 +496,13 @@ class CaroutGameView @JvmOverloads constructor(
         const val APP_ASSETS_HOST = "appassets.androidplatform.net"
         const val ASSET_PATH = "/assets/"
         const val DEFAULT_PROGRESS_JSON = "{\"unlocked\":1,\"done\":{}}"
+        const val MAX_TOAST_MESSAGE_LENGTH = 200
+        // 完全透明的 WebView 在部分厂商内核会被合成器跳过，导致 VisualStateCallback 不返回。
+        // 保留不可感知的 1% alpha 让冷启动文档持续参与合成，真正提交首帧后再切到完全可见。
+        const val HIDDEN_ALPHA = 0.01f
+        const val VISIBLE_ALPHA = 1f
+        const val RECOVERY_READY_SCRIPT =
+            "Boolean(window.CaroutHost && document.getElementById('game'))"
         val nextInstanceId = AtomicLong(0L)
     }
 }
@@ -333,6 +512,7 @@ internal fun buildCaroutGameUrl(
     levelNumber: Int,
     sessionId: Long? = null,
     languageTag: String? = null,
+    entry: GameLevelEntry? = null,
 ): String =
     buildString {
         append("https://appassets.androidplatform.net/assets/index.html?host=1&level=")
@@ -340,6 +520,10 @@ internal fun buildCaroutGameUrl(
         if (!languageTag.isNullOrBlank()) {
             append("&lang=")
             append(Uri.encode(languageTag))
+        }
+        if (entry != null) {
+            append("&entry=")
+            append(Uri.encode(entry.bridgeValue))
         }
         // 复用 WebView 时用独立 URL 标识本次文档，既避免读到上一关残留帧，也方便日志追踪。
         if (sessionId != null) append("&session=$sessionId")

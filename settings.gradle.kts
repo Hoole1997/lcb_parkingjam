@@ -20,14 +20,14 @@ if (buildConfigFile.exists()) {
     buildConfig.load(buildConfigFile.inputStream())
 }
 
-// Private Launcher SDK credentials have their own CI names so package access is independent of
-// the GitHub Actions trigger account. Existing local properties and legacy environment variables
-// remain valid to avoid disrupting developer machines and older workflows.
+// 兼容本地配置、专用 CI 密钥以及 LocationSharing 使用的 GitHub Actions 密钥命名。
+// 明确的 Launcher SDK 密钥优先，旧工作流仍可通过 PACKAGES_READ_TOKEN 正常拉取依赖。
 val launcherSdkGithubUser = buildConfig.getProperty("github.user")
     ?: System.getenv("LAUNCHER_SDK_GITHUB_USER")
     ?: System.getenv("GITHUB_ACTOR")
 val launcherSdkGithubToken = buildConfig.getProperty("github.token")
     ?: System.getenv("LAUNCHER_SDK_GITHUB_TOKEN")
+    ?: System.getenv("PACKAGES_READ_TOKEN")
     ?: System.getenv("GITHUB_TOKEN")
 
 dependencyResolutionManagement {

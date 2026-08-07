@@ -2,7 +2,6 @@
 export interface GameStrings {
   queueCount: string
   noParkingSpace: string
-  adLoading: string
   adNotCompleted: string
   toolNotNeeded: string
   adUnavailable: string
@@ -29,7 +28,6 @@ export interface GameStrings {
 const zhCn: GameStrings = {
   queueCount: '候车人数',
   noParkingSpace: '没有空车位！',
-  adLoading: '广告加载中…',
   adNotCompleted: '广告未完成，未使用道具',
   toolNotNeeded: '当前状态无需使用该道具',
   adUnavailable: '暂无可用广告，请稍后再试',
@@ -56,7 +54,6 @@ const zhCn: GameStrings = {
 const en: GameStrings = {
   queueCount: 'WAITING',
   noParkingSpace: 'No parking space!',
-  adLoading: 'Loading ad…',
   adNotCompleted: 'Ad not completed. Tool not used.',
   toolNotNeeded: 'This tool is not needed right now.',
   adUnavailable: 'No ad is available. Please try again later.',
@@ -83,7 +80,6 @@ const en: GameStrings = {
 const ja: GameStrings = {
   queueCount: '待機中',
   noParkingSpace: '空きスペースがありません！',
-  adLoading: '広告を読み込み中…',
   adNotCompleted: '広告が完了していないため、アイテムは使われませんでした。',
   toolNotNeeded: '今はこのアイテムを使う必要はありません。',
   adUnavailable: '利用できる広告がありません。後でもう一度お試しください。',
@@ -110,7 +106,6 @@ const ja: GameStrings = {
 const ko: GameStrings = {
   queueCount: '대기 인원',
   noParkingSpace: '빈 주차 공간이 없습니다!',
-  adLoading: '광고 불러오는 중…',
   adNotCompleted: '광고가 완료되지 않아 아이템을 사용하지 않았습니다.',
   toolNotNeeded: '지금은 이 아이템이 필요하지 않습니다.',
   adUnavailable: '사용 가능한 광고가 없습니다. 잠시 후 다시 시도하세요.',
@@ -137,7 +132,6 @@ const ko: GameStrings = {
 const es: GameStrings = {
   queueCount: 'EN ESPERA',
   noParkingSpace: '¡No hay espacio libre!',
-  adLoading: 'Cargando anuncio…',
   adNotCompleted: 'El anuncio no se completó. No se usó el objeto.',
   toolNotNeeded: 'Este objeto no es necesario ahora.',
   adUnavailable: 'No hay anuncios disponibles. Inténtalo más tarde.',
@@ -164,7 +158,6 @@ const es: GameStrings = {
 const ptBr: GameStrings = {
   queueCount: 'AGUARDANDO',
   noParkingSpace: 'Não há vaga livre!',
-  adLoading: 'Carregando anúncio…',
   adNotCompleted: 'O anúncio não foi concluído. O item não foi usado.',
   toolNotNeeded: 'Este item não é necessário agora.',
   adUnavailable: 'Nenhum anúncio disponível. Tente novamente mais tarde.',
@@ -191,7 +184,6 @@ const ptBr: GameStrings = {
 const fr: GameStrings = {
   queueCount: 'EN ATTENTE',
   noParkingSpace: 'Aucune place disponible !',
-  adLoading: 'Chargement de la publicité…',
   adNotCompleted: 'La publicité n’est pas terminée. L’objet n’a pas été utilisé.',
   toolNotNeeded: 'Cet objet n’est pas utile pour le moment.',
   adUnavailable: 'Aucune publicité disponible. Réessayez plus tard.',
@@ -218,7 +210,6 @@ const fr: GameStrings = {
 const de: GameStrings = {
   queueCount: 'WARTEND',
   noParkingSpace: 'Kein Parkplatz frei!',
-  adLoading: 'Werbung wird geladen…',
   adNotCompleted: 'Werbung nicht abgeschlossen. Gegenstand wurde nicht verwendet.',
   toolNotNeeded: 'Dieser Gegenstand wird gerade nicht benötigt.',
   adUnavailable: 'Keine Werbung verfügbar. Bitte später erneut versuchen.',

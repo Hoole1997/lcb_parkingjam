@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name" translatable="false">Parking Jam</string>
+    <string name="game_all_complete">第一地区 30 个关卡已完成！</string>
+    <string name="game_settings_title">游戏设置</string>
+    <string name="game_settings_message">当前已启用沉浸式显示。可从屏幕边缘滑动临时查看系统栏；游戏进入后台会自动暂停并保存。</string>
+    <string name="game_settings_close">知道了</string>
+    <string name="settings_language_dialog_title">选择语言</string>
+    <string name="settings_language_system">跟随系统</string>
+    <string name="settings_language_simplified_chinese">简体中文</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_japanese" translatable="false">日本語</string>
+    <string name="settings_language_korean" translatable="false">한국어</string>
+    <string name="settings_language_spanish" translatable="false">Español</string>
+    <string name="settings_language_portuguese_brazil" translatable="false">Português (Brasil)</string>
+    <string name="settings_language_french" translatable="false">Français</string>
+    <string name="settings_language_german" translatable="false">Deutsch</string>
+    <string name="settings_language_option_selected_accessibility">已选择：%1$s</string>
+    <string name="settings_version_format">v%1$s</string>
+    <string name="settings_feedback_subject">%1$s 使用反馈（%2$s）</string>
+    <string name="settings_feedback_chooser">选择邮箱应用</string>
+    <string name="settings_feedback_unavailable">未找到可用的邮箱应用</string>
+    <string name="settings_privacy_browser_unavailable">未找到可打开隐私协议的浏览器</string>
+    <string name="tutorial_level_1">点击车辆，让它沿箭头方向驶出</string>
+    <string name="tutorial_level_2">不同方向都能离场，试试连续点击</string>
+    <string name="tutorial_level_3">被挡住时，先让最前面的车离开</string>
+    <string name="tutorial_level_4">两条车流可以交错处理</string>
+    <string name="tutorial_level_5">先观察阻挡，再从两条车流的最前方开始</string>
+</resources>

@@ -32,46 +32,43 @@ internal class LcbAppDelegate(
 ) {
 
     fun onCreate(registerAttributionListener: (AttributionListener) -> Unit) {
-        // Optional SDKs are installed as a deferred action. MainActivity enables this action only
-        // after the user's persisted privacy choice has been read off the main thread.
-        OptionalSdkLifecycleGateway.install {
-            runCatching {
-                FirebaseAnalytics.getInstance(application).setAnalyticsCollectionEnabled(true)
-                FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
-                FirebaseMessaging.getInstance().isAutoInitEnabled = true
-            }.onFailure { error ->
-                LogUtils.e("Optional Firebase startup failed", error)
+        // 启动过程不再弹出主动隐私选择；隐私协议只保留在设置页供用户查看。
+        runCatching {
+            FirebaseAnalytics.getInstance(application).setAnalyticsCollectionEnabled(true)
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+            FirebaseMessaging.getInstance().isAutoInitEnabled = true
+        }.onFailure { error ->
+            LogUtils.e("Optional Firebase startup failed", error)
+        }
+        runCatching {
+            MetricsInitializer.initializeAfterConsent(application.applicationContext)
+        }.onFailure { error ->
+            LogUtils.e("Optional metrics startup failed", error)
+        }
+        runCatching {
+            LcbAdInitializer.initialize(application)
+        }.onFailure { error ->
+            // A broken ad network must not terminate the process or block attribution setup.
+            LogUtils.e("Optional advertising startup failed", error)
+        }
+        runCatching {
+            registerAttributionListener { isOrganic, network, campaign, adgroup, creative, jsonResponse ->
+                AdjustTracker.init(
+                    context = application.applicationContext,
+                    network = network,
+                    campaign = campaign,
+                    adgroup = adgroup,
+                    creative = creative,
+                    jsonResponse = jsonResponse,
+                )
+                // Do not print the raw attribution response: it may contain device metadata.
+                LogUtils.i(
+                    "Attribution ready: isOrganic=$isOrganic, network=$network, " +
+                        "campaign=$campaign, adgroup=$adgroup, creative=$creative",
+                )
             }
-            runCatching {
-                MetricsInitializer.initializeAfterConsent(application.applicationContext)
-            }.onFailure { error ->
-                LogUtils.e("Optional metrics startup failed", error)
-            }
-            runCatching {
-                LcbAdInitializer.initialize(application)
-            }.onFailure { error ->
-                // A broken ad network must not terminate the process or block attribution setup.
-                LogUtils.e("Optional advertising startup failed", error)
-            }
-            runCatching {
-                registerAttributionListener { isOrganic, network, campaign, adgroup, creative, jsonResponse ->
-                    AdjustTracker.init(
-                        context = application.applicationContext,
-                        network = network,
-                        campaign = campaign,
-                        adgroup = adgroup,
-                        creative = creative,
-                        jsonResponse = jsonResponse,
-                    )
-                    // Do not print the raw attribution response: it may contain device metadata.
-                    LogUtils.i(
-                        "Attribution ready: isOrganic=$isOrganic, network=$network, " +
-                            "campaign=$campaign, adgroup=$adgroup, creative=$creative",
-                    )
-                }
-            }.onFailure { error ->
-                LogUtils.e("Attribution listener registration failed", error)
-            }
+        }.onFailure { error ->
+            LogUtils.e("Attribution listener registration failed", error)
         }
     }
 

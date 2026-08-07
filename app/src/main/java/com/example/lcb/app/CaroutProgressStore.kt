@@ -78,6 +78,14 @@ internal data class CaroutProgressSnapshot(
     val continueLevel: Int
         get() = (1..LEVEL_COUNT).firstOrNull { it !in completedLevels } ?: LEVEL_COUNT
 
+    /** 首页、选关 UI 和点击埋点共用同一套关卡状态判定。 */
+    fun levelStatus(levelNumber: Int): LevelNodeStatus = when {
+        levelNumber in completedLevels -> LevelNodeStatus.COMPLETED
+        levelNumber == continueLevel -> LevelNodeStatus.CURRENT
+        levelNumber in 1..unlockedLevel -> LevelNodeStatus.AVAILABLE
+        else -> LevelNodeStatus.LOCKED
+    }
+
     private val starProgress: StarProgressUiState
         get() = StarProgressUiState(
             earned = completedLevels.size * STARS_PER_LEVEL,
@@ -105,12 +113,7 @@ internal data class CaroutProgressSnapshot(
             LevelNodeUiState(
                 levelNumber = level,
                 stars = if (level in completedLevels) STARS_PER_LEVEL else 0,
-                status = when {
-                    level in completedLevels -> LevelNodeStatus.COMPLETED
-                    level == continueLevel -> LevelNodeStatus.CURRENT
-                    level <= unlockedLevel -> LevelNodeStatus.AVAILABLE
-                    else -> LevelNodeStatus.LOCKED
-                },
+                status = levelStatus(level),
                 isBoss = level % BOSS_INTERVAL == 0,
                 isHardPreview = level % HARD_INTERVAL == 0,
             )

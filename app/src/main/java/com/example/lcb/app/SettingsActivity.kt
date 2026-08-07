@@ -46,7 +46,7 @@ class SettingsActivity : ImmersiveGameActivity() {
     }
 
     private fun renderSettings() {
-        val language = AppLanguageController.current()
+        val language = AppLanguageController.current(this)
         settingsView.render(
             GameSettingsUiState(
                 languageDisplayName = getString(language.displayNameRes),
@@ -61,8 +61,8 @@ class SettingsActivity : ImmersiveGameActivity() {
     private fun showLanguagePicker() {
         LanguageBottomSheetDialog(
             activity = this,
-            selectedOption = AppLanguageController.current(),
-            onOptionSelected = AppLanguageController::apply,
+            selectedOption = AppLanguageController.current(this),
+            onOptionSelected = { option -> AppLanguageController.apply(this, option) },
         ).show()
     }
 
@@ -73,7 +73,10 @@ class SettingsActivity : ImmersiveGameActivity() {
             BuildConfig.VERSION_NAME,
         )
         val chooser = Intent.createChooser(
-            SettingsEmailIntentFactory.create(subject),
+            SettingsEmailIntentFactory.create(
+                recipient = FEEDBACK_RECIPIENT,
+                subject = subject,
+            ),
             getString(R.string.settings_feedback_chooser),
         )
         try {
@@ -96,5 +99,9 @@ class SettingsActivity : ImmersiveGameActivity() {
 
     private fun closePage() {
         GameActivityNavigator.closeCurrentPage(this)
+    }
+
+    private companion object {
+        const val FEEDBACK_RECIPIENT = "naznotechnology@gmail.com"
     }
 }

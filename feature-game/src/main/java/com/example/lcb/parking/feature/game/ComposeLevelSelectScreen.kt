@@ -75,6 +75,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ComposeLevelSelectScreen(
     state: LevelSelectUiState,
+    navigationEnabled: Boolean = true,
     onBackRequested: () -> Unit,
     onLevelSelected: (levelNumber: Int) -> Unit,
     onContinueRequested: (levelNumber: Int) -> Unit,
@@ -84,6 +85,7 @@ fun ComposeLevelSelectScreen(
     CompositionLocalProvider(LocalComposeLevelSelectColors provides colors) {
         LevelGridContent(
             state = state,
+            navigationEnabled = navigationEnabled,
             onBackRequested = onBackRequested,
             onLevelSelected = onLevelSelected,
             onContinueRequested = onContinueRequested,
@@ -95,6 +97,7 @@ fun ComposeLevelSelectScreen(
 @Composable
 private fun LevelGridContent(
     state: LevelSelectUiState,
+    navigationEnabled: Boolean,
     onBackRequested: () -> Unit,
     onLevelSelected: (Int) -> Unit,
     onContinueRequested: (Int) -> Unit,
@@ -103,7 +106,9 @@ private fun LevelGridContent(
     val nodes = remember(state.nodes) { levelGridNodes(state.nodes) }
     val gridState = rememberLazyGridState()
     val continueNode = nodes.firstOrNull { it.levelNumber == state.continueLevelNumber }
-    val continueEnabled = continueNode != null && continueNode.status != LevelNodeStatus.LOCKED
+    val continueEnabled = navigationEnabled &&
+        continueNode != null &&
+        continueNode.status != LevelNodeStatus.LOCKED
 
     // 深关卡只在目标关卡变化时定位，普通重组不会抢夺用户的滚动位置。
     LaunchedEffect(state.continueLevelNumber, nodes) {
@@ -143,6 +148,7 @@ private fun LevelGridContent(
             items(nodes, key = LevelNodeUiState::levelNumber) { node ->
                 LevelGridCard(
                     state = node,
+                    navigationEnabled = navigationEnabled,
                     onClick = onLevelSelected,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -309,10 +315,11 @@ private fun StarCounter(
 @Composable
 private fun LevelGridCard(
     state: LevelNodeUiState,
+    navigationEnabled: Boolean,
     onClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val enabled = state.status != LevelNodeStatus.LOCKED
+    val enabled = navigationEnabled && state.status != LevelNodeStatus.LOCKED
     val description = levelNodeDescription(state)
     val background = when {
         state.status == LevelNodeStatus.CURRENT -> R.drawable.parking_level_card_current

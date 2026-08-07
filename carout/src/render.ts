@@ -30,16 +30,10 @@ interface SpriteBox {
 interface SpriteAtlas {
   image: HTMLImageElement
   boxes: readonly SpriteBox[]
-  settled: boolean
 }
 
 function createSpriteAtlas(source: string, boxes: readonly SpriteBox[]): SpriteAtlas {
-  const atlas: SpriteAtlas = { image: new Image(), boxes, settled: false }
-  const markSettled = () => {
-    atlas.settled = true
-  }
-  atlas.image.addEventListener('load', markSettled, { once: true })
-  atlas.image.addEventListener('error', markSettled, { once: true })
+  const atlas: SpriteAtlas = { image: new Image(), boxes }
   atlas.image.src = source
   return atlas
 }
@@ -73,11 +67,6 @@ const longBusAtlas = createSpriteAtlas('./sprites-v2/long-buses-atlas-v2.png', [
 
 function atlasDrawable(atlas: SpriteAtlas): boolean {
   return atlas.image.complete && atlas.image.naturalWidth > 0
-}
-
-/** 首帧需要等待三张本地精灵图结束加载，失败时会自动回退到矢量绘制。 */
-export function gameSpriteAssetsSettled(): boolean {
-  return passengerAtlas.settled && compactCarAtlas.settled && longBusAtlas.settled
 }
 
 export function roundRect(
@@ -117,6 +106,204 @@ function applyFittedCanvasFont(
   const measuredWidth = Math.max(1, ctx.measureText(text).width)
   const fittedSize = Math.max(safeMin, Math.min(safeMax, safeMax * Math.max(1, maxWidth) / measuredWidth))
   ctx.font = `${fontWeight} ${fittedSize}px ${fontFamily}`
+}
+
+export interface ContainedTextOptions {
+  color?: string
+  minFontSize?: number
+  maxFontSize?: number
+  fontFamily?: string
+  fontWeight?: string
+  maxLines?: number
+  lineHeight?: number
+  horizontalPadding?: number
+}
+
+interface ContainedTextLayout {
+  fontSize: number
+  lines: string[]
+}
+
+const containedTextLayoutCache = new Map<string, ContainedTextLayout>()
+const MAX_CONTAINED_TEXT_CACHE_SIZE = 128
+
+/**
+ * 在给定矩形容器内绘制文本。
+ *
+ * 布局会同时受容器宽度和高度约束：优先保持最大字号，必要时自动缩小并按词换行；最终
+ * 仍会裁剪在容器内，避免任何语言、emoji 或异常长单词侵入相邻 UI。
+ */
+export function drawContainedText(
+  ctx: CanvasRenderingContext2D,
+  container: Rect,
+  text: string,
+  options: ContainedTextOptions = {},
+) {
+  const {
+    color = '#fff',
+    minFontSize = 12,
+    maxFontSize = 20,
+    fontFamily = '-apple-system, "PingFang SC", sans-serif',
+    fontWeight = 'bold',
+    maxLines = 1,
+    lineHeight = 1.18,
+    horizontalPadding = 0,
+  } = options
+  const safeText = text.trim()
+  if (!safeText || container.w <= 0 || container.h <= 0) return
+
+  const contentWidth = Math.max(1, container.w - horizontalPadding * 2)
+  const safeMinFont = Math.max(1, Math.min(minFontSize, maxFontSize))
+  const safeMaxFont = Math.max(safeMinFont, maxFontSize)
+  const safeMaxLines = Math.max(1, Math.floor(maxLines))
+  const cacheKey = [
+    safeText,
+    Math.round(contentWidth * 10),
+    Math.round(container.h * 10),
+    safeMinFont,
+    safeMaxFont,
+    fontFamily,
+    fontWeight,
+    safeMaxLines,
+    lineHeight,
+  ].join('|')
+  let layout = containedTextLayoutCache.get(cacheKey)
+  if (!layout) {
+    layout = calculateContainedTextLayout(
+      ctx,
+      safeText,
+      contentWidth,
+      container.h,
+      safeMinFont,
+      safeMaxFont,
+      fontFamily,
+      fontWeight,
+      safeMaxLines,
+      lineHeight,
+    )
+    if (containedTextLayoutCache.size >= MAX_CONTAINED_TEXT_CACHE_SIZE) {
+      const oldestKey = containedTextLayoutCache.keys().next().value
+      if (oldestKey !== undefined) containedTextLayoutCache.delete(oldestKey)
+    }
+    containedTextLayoutCache.set(cacheKey, layout)
+  }
+
+  ctx.save()
+  ctx.beginPath()
+  ctx.rect(container.x, container.y, container.w, container.h)
+  ctx.clip()
+  ctx.fillStyle = color
+  ctx.font = `${fontWeight} ${layout.fontSize}px ${fontFamily}`
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  const actualLineHeight = layout.fontSize * lineHeight
+  const firstLineY = container.y + container.h / 2 - ((layout.lines.length - 1) * actualLineHeight) / 2
+  layout.lines.forEach((line, index) => {
+    ctx.fillText(line, container.x + container.w / 2, firstLineY + index * actualLineHeight)
+  })
+  ctx.restore()
+}
+
+function calculateContainedTextLayout(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  maxHeight: number,
+  minFontSize: number,
+  maxFontSize: number,
+  fontFamily: string,
+  fontWeight: string,
+  maxLines: number,
+  lineHeight: number,
+): ContainedTextLayout {
+  let low = minFontSize
+  let high = maxFontSize
+  let bestFontSize = minFontSize
+  let bestLines: string[] = []
+
+  // 二分字号并缓存结果，避免游戏帧循环中反复逐像素测量长翻译。
+  for (let attempt = 0; attempt < 7 && low <= high; attempt++) {
+    const candidateSize = (low + high) / 2
+    ctx.font = `${fontWeight} ${candidateSize}px ${fontFamily}`
+    const candidateLines = wrapCanvasText(ctx, text, maxWidth)
+    const fits = candidateLines.length <= maxLines && candidateLines.length * candidateSize * lineHeight <= maxHeight
+    if (fits) {
+      bestFontSize = candidateSize
+      bestLines = candidateLines
+      low = candidateSize + 0.25
+    } else {
+      high = candidateSize - 0.25
+    }
+  }
+
+  ctx.font = `${fontWeight} ${bestFontSize}px ${fontFamily}`
+  if (bestLines.length === 0) bestLines = wrapCanvasText(ctx, text, maxWidth)
+  return {
+    fontSize: bestFontSize,
+    lines: clampCanvasTextLines(ctx, bestLines, maxLines, maxWidth),
+  }
+}
+
+function wrapCanvasText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
+  const words = text.split(/\s+/).filter(Boolean)
+  if (words.length <= 1) return wrapOversizedCanvasWord(ctx, text, maxWidth)
+
+  const lines: string[] = []
+  let currentLine = ''
+  for (const word of words) {
+    const segments = ctx.measureText(word).width <= maxWidth
+      ? [word]
+      : wrapOversizedCanvasWord(ctx, word, maxWidth)
+    for (const segment of segments) {
+      const candidate = currentLine ? `${currentLine} ${segment}` : segment
+      if (currentLine && ctx.measureText(candidate).width > maxWidth) {
+        lines.push(currentLine)
+        currentLine = segment
+      } else {
+        currentLine = candidate
+      }
+    }
+  }
+  if (currentLine) lines.push(currentLine)
+  return lines
+}
+
+function wrapOversizedCanvasWord(
+  ctx: CanvasRenderingContext2D,
+  word: string,
+  maxWidth: number,
+): string[] {
+  const lines: string[] = []
+  let currentLine = ''
+  for (const character of Array.from(word)) {
+    const candidate = currentLine + character
+    if (currentLine && ctx.measureText(candidate).width > maxWidth) {
+      lines.push(currentLine)
+      currentLine = character
+    } else {
+      currentLine = candidate
+    }
+  }
+  if (currentLine) lines.push(currentLine)
+  return lines
+}
+
+function clampCanvasTextLines(
+  ctx: CanvasRenderingContext2D,
+  lines: string[],
+  maxLines: number,
+  maxWidth: number,
+): string[] {
+  if (lines.length <= maxLines) return lines
+  const visibleLines = lines.slice(0, maxLines)
+  // 拉丁语按空格恢复被截断的词，CJK 按字符行直接拼接，避免省略处理改变原文结构。
+  const separator = lines.some((line) => line.includes(' ')) ? ' ' : ''
+  let lastLine = lines.slice(maxLines - 1).join(separator)
+  while (lastLine && ctx.measureText(`${lastLine}…`).width > maxWidth) {
+    lastLine = Array.from(lastLine).slice(0, -1).join('')
+  }
+  visibleLines[maxLines - 1] = `${lastLine}…`
+  return visibleLines
 }
 
 // ------------------------------------------------------------------
@@ -986,11 +1173,13 @@ export function drawButton(
   roundRect(ctx, r.x, r.y, r.w, r.h, radius)
   ctx.fillStyle = bg
   ctx.fill()
-  ctx.fillStyle = fg
-  ctx.font = `bold ${font}px -apple-system, "PingFang SC", sans-serif`
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText(label, r.x + r.w / 2, r.y + r.h / 2 + font * 0.05)
+  drawContainedText(ctx, r, label, {
+    color: fg,
+    minFontSize: Math.max(12, font * 0.68),
+    maxFontSize: font,
+    maxLines: 1,
+    horizontalPadding: Math.max(12, r.w * 0.08),
+  })
 }
 
 // 通用胶囊提示

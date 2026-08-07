@@ -85,7 +85,7 @@ val toponUnitConfig = toponConfig.nestedMap("adUnitIds")
 val resolvedVersionName = appConfig.stringValue("versionName", "1.0.0")
 val privacyPolicyUrl = appConfig.stringValue(
     "privacyPolicyUrl",
-    "https://example.com/privacy-policy",
+    "https://naznotechnology.com/Policy.html",
 )
 val googleReleaseKeystorePath = secretValue("ANDROID_SIGNING_STORE_FILE")
 val googleReleaseKeystoreFile = if (googleReleaseKeystorePath.isNotEmpty()) {
@@ -307,13 +307,13 @@ dependencies {
 //    implementation(project(":core"))
     implementation(project(":metrics"))
     implementation(project(":feature-game"))
-    implementation("com.github.toukaremax:core:1.0.11")
-    implementation("com.github.toukaremax:bill:1.0.42") {
+    implementation("com.github.toukaremax:core:1.0.15")
+    implementation("com.github.toukaremax:bill:1.0.48") {
         // Launcher SDK provides com.unity3d.ads-mediation:mediation-sdk:9.2.0.
         // Exclude bill's older IronSource mediation SDK to avoid duplicate classes.
         exclude(group = "com.ironsource.sdk", module = "mediationsdk")
     }
     // 两个 Launcher SDK 含有相同包名的混淆类，必须按渠道隔离，不能同时进入一个 variant。
-    add("googleImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-dev:1.0.1")
-    add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-RemoteControl:1.0.1")
+    add("googleImplementation", "com.launcher.unity:com.parkingjam.carpuzzle-release:1.0.0")
+    add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-ParkingJam:1.0.0")
 }

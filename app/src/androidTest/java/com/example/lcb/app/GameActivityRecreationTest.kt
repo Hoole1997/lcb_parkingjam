@@ -8,6 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.example.lcb.parking.feature.game.CaroutGameView
+import com.example.lcb.parking.feature.game.GameLevelEntry
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
@@ -33,7 +34,11 @@ class GameActivityRecreationTest {
 
         repeat(LAUNCH_COUNT) { launchIndex ->
             instrumentation.runOnMainSync {
-                GameActivityNavigator.openGame(mainActivity, levelNumber = 1)
+                GameActivityNavigator.openGame(
+                    mainActivity,
+                    levelNumber = 1,
+                    entry = GameLevelEntry.HOME,
+                )
             }
             // 必须拿到新创建的 Activity，不能把仍处于生命周期切换中的旧实例误判为第二次进入。
             val activity = awaitResumedActivity(excluded = previousGameActivity)
@@ -44,6 +49,10 @@ class GameActivityRecreationTest {
             assertTrue("launch ${launchIndex + 1} did not initialize Canvas: $state", state.canvasReady)
             assertTrue("launch ${launchIndex + 1} did not initialize host bridge: $state", state.hostReady)
             assertTrue("launch ${launchIndex + 1} Canvas did not paint a frame: $state", state.framePainted)
+            assertTrue(
+                "launch ${launchIndex + 1} WebView visual frame was not revealed: $state",
+                state.webViewVisible,
+            )
 
             instrumentation.runOnMainSync {
                 activity.onBackPressedDispatcher.onBackPressed()
@@ -86,7 +95,8 @@ class GameActivityRecreationTest {
                     state.session != excludedSession &&
                     state.canvasReady &&
                     state.hostReady &&
-                    state.framePainted
+                    state.framePainted &&
+                    state.webViewVisible
                 ) {
                     return state
                 }
@@ -98,10 +108,12 @@ class GameActivityRecreationTest {
 
     private fun inspectWebGameState(activity: GameActivity): WebGameState? {
         val result = AtomicReference<String?>()
+        val webViewVisible = AtomicReference(false)
         val latch = CountDownLatch(1)
         activity.runOnUiThread {
             val gameView = activity.findViewById<CaroutGameView>(R.id.game_screen)
             val webView = gameView.getChildAt(0) as WebView
+            webViewVisible.set(webView.alpha >= VISIBLE_ALPHA_THRESHOLD)
             webView.evaluateJavascript(INSPECTION_SCRIPT) { value ->
                 result.set(value)
                 latch.countDown()
@@ -116,6 +128,7 @@ class GameActivityRecreationTest {
             canvasReady = fields[2] == "true",
             hostReady = fields[3] == "true",
             framePainted = fields[4] == "true",
+            webViewVisible = webViewVisible.get(),
         )
     }
 
@@ -125,6 +138,7 @@ class GameActivityRecreationTest {
         val canvasReady: Boolean,
         val hostReady: Boolean,
         val framePainted: Boolean,
+        val webViewVisible: Boolean,
     )
 
     private companion object {
@@ -133,6 +147,7 @@ class GameActivityRecreationTest {
         const val MAX_ATTEMPTS = 30
         const val RETRY_INTERVAL_MS = 100L
         const val JS_TIMEOUT_SECONDS = 2L
+        const val VISIBLE_ALPHA_THRESHOLD = 0.99f
         const val INSPECTION_SCRIPT =
             "(()=>{const c=document.getElementById('game');" +
                 "const ready=!!c&&c.width>0;let painted=false;" +
