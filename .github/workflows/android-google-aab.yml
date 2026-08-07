@@ -28,6 +28,8 @@ jobs:
       KEY_PASSWORD: google123456
       GRADLE_JVM_ARGS: -Xmx6144m -XX:MaxMetaspaceSize=1024m -XX:+UseParallelGC -Dfile.encoding=UTF-8
       KOTLIN_DAEMON_JVM_ARGS: -Xmx1024m
+      # 交给 setup-node 注入 PATH，避免误用 runner 自带的旧版 /usr/local/bin/npm。
+      NPM_EXECUTABLE: npm
       GITHUB_ACTOR: ${{ github.actor }}
       PACKAGES_READ_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN }}
 
@@ -37,6 +39,13 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: carout/package-lock.json
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4

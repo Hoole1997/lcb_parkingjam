@@ -9,16 +9,40 @@ val npmExecutable = providers.environmentVariable("NPM_EXECUTABLE").orNull
         .firstOrNull { candidate -> file(candidate).canExecute() }
     ?: "npm"
 
+val caroutDirectory = rootProject.file("carout")
+val caroutPackageJson = caroutDirectory.resolve("package.json")
+val caroutPackageLock = caroutDirectory.resolve("package-lock.json")
+
+/**
+ * 为网页运行时安装锁文件确定的依赖。将 node_modules 内 npm 生成的锁文件声明为输出，
+ * 避免每次 Android 构建重复安装，同时保证干净的 CI Runner 可以自包含地完成构建。
+ */
+val installCaroutWebDependencies by tasks.registering(Exec::class) {
+    group = "build setup"
+    description = "Installs the locked carout web dependencies required by the Android build."
+    workingDir(caroutDirectory)
+    commandLine(npmExecutable, "ci", "--include=dev", "--no-audit", "--no-fund")
+    inputs.files(caroutPackageJson, caroutPackageLock)
+    outputs.file(caroutDirectory.resolve("node_modules/.package-lock.json"))
+}
+
 val buildCaroutWeb by tasks.registering(Exec::class) {
     group = "build"
     description = "Builds the local carout Canvas runtime before Android assets are merged."
-    workingDir(rootProject.file("carout"))
+    dependsOn(installCaroutWebDependencies)
+    workingDir(caroutDirectory)
     commandLine(npmExecutable, "run", "build")
-    inputs.file(rootProject.file("carout/package.json"))
-    inputs.file(rootProject.file("carout/vite.config.ts"))
-    inputs.files(rootProject.fileTree("carout/src"))
-    inputs.file(rootProject.file("carout/index.html"))
-    outputs.dir(rootProject.file("carout/dist"))
+    inputs.files(
+        caroutPackageJson,
+        caroutPackageLock,
+        caroutDirectory.resolve("tsconfig.json"),
+        caroutDirectory.resolve("vite.config.ts"),
+        caroutDirectory.resolve("index.html"),
+    )
+    inputs.dir(caroutDirectory.resolve("src"))
+    inputs.dir(caroutDirectory.resolve("scripts"))
+    inputs.dir(caroutDirectory.resolve("public"))
+    outputs.dir(caroutDirectory.resolve("dist"))
 }
 
 tasks.matching { task -> task.name.startsWith("merge") && task.name.endsWith("Assets") }
@@ -41,7 +65,7 @@ android {
     }
 
     // carout 的 Vite 构建产物直接打进 AAR，避免复制资源产生两份事实来源。
-    sourceSets["main"].assets.srcDir(rootProject.file("carout/dist"))
+    sourceSets["main"].assets.srcDir(caroutDirectory.resolve("dist"))
     // 原生旧玩法已归档到 src/legacyNative，不进入产物；carout 是唯一运行时规则源。
 
     compileOptions {

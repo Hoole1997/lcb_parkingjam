@@ -9,6 +9,7 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
+    "types": ["node"],
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "isolatedModules": true
   },
