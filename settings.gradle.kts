@@ -35,6 +35,26 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Chartboost Mediation adapters are published in Chartboost's official repository,
+        // not Maven Central. Keep the official source ahead of aggregate mirrors so Gradle
+        // does not bind adapter metadata to a mirror and then fail while downloading its AAR.
+        maven("https://cboost.jfrog.io/artifactory/chartboost-mediation") {
+            content {
+                includeGroup("com.chartboost")
+            }
+        }
+        // Chartboost Mediation pulls Core and Monetization from separate official repos.
+        // Declaring all three keeps the complete transitive graph independent of mirrors.
+        maven("https://cboost.jfrog.io/artifactory/chartboost-core") {
+            content {
+                includeGroup("com.chartboost")
+            }
+        }
+        maven("https://cboost.jfrog.io/artifactory/chartboost-ads") {
+            content {
+                includeGroup("com.chartboost")
+            }
+        }
         maven("https://jitpack.io")
         maven("https://artifact.bytedance.com/repository/pangle/")
         maven("https://repo.itextsupport.com/android")
@@ -43,7 +63,6 @@ dependencyResolutionManagement {
         maven("https://android-sdk.is.com/")
         maven("https://jfrog.anythinktech.com/artifactory/overseas_sdk")
         maven("https://artifacts.applovin.com/android")
-        maven("https://repo.dgtverse.cn/repository/maven-public")
         maven {
             url = uri("https://maven.pkg.github.com/toukaRemax/remax_sdk")
             credentials {
