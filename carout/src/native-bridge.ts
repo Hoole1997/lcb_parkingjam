@@ -3,7 +3,7 @@ import type { Progress } from './storage'
 /** Android 仅注入到可信本地页面的最小桥接接口。 */
 interface AndroidCaroutBridge {
   loadProgress(): string
-  saveProgress(progressJson: string): void
+  saveProgress(progressJson: string): boolean
   loadSoundEnabled(): boolean
   saveSoundEnabled(enabled: boolean): void
   firstFrameRendered(sessionId: number): void
@@ -64,12 +64,13 @@ export function loadNativeProgress(): Progress | null {
   }
 }
 
-export function saveNativeProgress(progress: Progress) {
-  if (!hostMode || !window.CaroutNative) return
+export function saveNativeProgress(progress: Progress): boolean {
+  if (!hostMode || !window.CaroutNative) return false
   try {
-    window.CaroutNative.saveProgress(JSON.stringify(progress))
+    return window.CaroutNative.saveProgress(JSON.stringify(progress))
   } catch {
     // 原生宿主异常不阻塞游戏帧，localStorage 仍保留降级存档。
+    return false
   }
 }
 

@@ -43,8 +43,14 @@ class CaroutGameView @JvmOverloads constructor(
         /** 返回游戏自己的原生首页，不得返回 Launcher。 */
         fun onExitToGameHomeRequested()
 
-        /** Web 层保存后的完整进度 JSON，宿主应做校验再持久化。 */
-        fun onProgressChanged(progressJson: String)
+        /**
+         * Web 层请求持久化完整进度。
+         *
+         * 该回调运行在 WebView 的 JavaScript Bridge 工作线程，宿主不得访问 View；必须在
+         * 返回前完成校验和持久化，并返回规范化后的 JSON。同步确认可以避免通关后立即退出
+         * Activity 时，尚未执行的主线程消息丢失本次进度。
+         */
+        fun onProgressSaveRequested(progressJson: String): String
 
         /** 局内声音偏好由应用层持久化，玩法页面不直接依赖 Android 存储 API。 */
         fun onSoundEnabledChanged(enabled: Boolean)
@@ -75,6 +81,7 @@ class CaroutGameView @JvmOverloads constructor(
     private val webView = CaroutWebViewPool.acquire(context)
     private val languageTag = resources.configuration.locales[0].toLanguageTag()
     private val webViewInstanceId = Integer.toHexString(System.identityHashCode(webView))
+    @Volatile
     private var callbacks: HostCallbacks? = null
     @Volatile
     private var initialProgressJson: String = DEFAULT_PROGRESS_JSON
@@ -174,12 +181,6 @@ class CaroutGameView @JvmOverloads constructor(
                 }
             }
         }
-    }
-
-    /** 宿主完成校验后回写规范化进度，保证下一次页面重载不会读取旧快照。 */
-    @MainThread
-    fun updateProgressJson(progressJson: String) {
-        initialProgressJson = progressJson
     }
 
     /** 页面隐藏时暂停定时器和 WebView，防止首页背后继续跑帧。 */
@@ -381,8 +382,17 @@ class CaroutGameView @JvmOverloads constructor(
         fun loadProgress(): String = initialProgressJson
 
         @JavascriptInterface
-        fun saveProgress(progressJson: String) {
-            post { callbacks?.onProgressChanged(progressJson) }
+        fun saveProgress(progressJson: String): Boolean {
+            val hostCallbacks = callbacks ?: return false
+            val stableProgressJson = runCatching {
+                hostCallbacks.onProgressSaveRequested(progressJson)
+            }.onFailure { error ->
+                Log.e(LOG_TAG, "view#$instanceId failed to persist progress", error)
+            }.getOrNull() ?: return false
+
+            // 保存成功后立刻刷新宿主快照，当前 WebView 因系统原因重载时不会读到旧进度。
+            initialProgressJson = stableProgressJson
+            return true
         }
 
         @JavascriptInterface

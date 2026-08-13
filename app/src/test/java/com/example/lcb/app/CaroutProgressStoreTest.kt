@@ -3,6 +3,7 @@ package com.example.lcb.app
 import com.example.lcb.parking.feature.game.LevelNodeStatus
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CaroutProgressStoreTest {
@@ -41,10 +42,14 @@ class CaroutProgressStoreTest {
     @Test
     fun jsonRoundTrip_preservesStableProgress() {
         val original = CaroutProgressSnapshot(7, setOf(1, 3, 6))
-        val decoded = CaroutProgressCodec.decode(original.toJson())
+        val encoded = original.toJson()
+        val decoded = CaroutProgressCodec.decode(encoded)
 
         assertEquals(original, decoded)
-        assertFalse(decoded.toJson().contains("coins"))
-        assertFalse(decoded.toJson().contains("stars"))
+        // 这两个名字是 Web/Android 的跨层协议，release 混淆后也必须保持不变。
+        assertTrue(encoded.contains("\"unlocked\":7"))
+        assertTrue(encoded.contains("\"done\""))
+        assertFalse(encoded.contains("coins"))
+        assertFalse(encoded.contains("stars"))
     }
 }

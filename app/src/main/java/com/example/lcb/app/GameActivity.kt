@@ -78,10 +78,8 @@ class GameActivity : ImmersiveGameActivity() {
 
                 override fun onExitToGameHomeRequested() = returnToGameHome()
 
-                override fun onProgressChanged(progressJson: String) {
-                    val stableProgress = progressStore.save(progressJson)
-                    gameScreen.updateProgressJson(stableProgress.toJson())
-                }
+                override fun onProgressSaveRequested(progressJson: String): String =
+                    progressStore.save(progressJson).toJson()
 
                 override fun onSoundEnabledChanged(enabled: Boolean) {
                     gamePreferencesStore.setSoundEnabled(enabled)

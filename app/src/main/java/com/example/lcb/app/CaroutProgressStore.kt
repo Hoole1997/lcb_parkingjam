@@ -1,7 +1,6 @@
 package com.example.lcb.app
 
 import android.content.Context
-import androidx.core.content.edit
 import com.example.lcb.parking.feature.game.GameHomePrimaryAction
 import com.example.lcb.parking.feature.game.GameHomeUiState
 import com.example.lcb.parking.feature.game.LevelNodeStatus
@@ -9,6 +8,7 @@ import com.example.lcb.parking.feature.game.LevelNodeUiState
 import com.example.lcb.parking.feature.game.LevelSelectUiState
 import com.example.lcb.parking.feature.game.StarProgressUiState
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 
 /**
  * carout 进度的原生持久化边界。
@@ -18,15 +18,20 @@ import com.google.gson.Gson
  */
 internal class CaroutProgressStore(context: Context) {
     private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+    private val accessLock = Any()
 
-    fun load(): CaroutProgressSnapshot = CaroutProgressCodec.decode(
-        preferences.getString(KEY_PROGRESS, null),
-    )
+    fun load(): CaroutProgressSnapshot = synchronized(accessLock) {
+        CaroutProgressCodec.decode(preferences.getString(KEY_PROGRESS, null))
+    }
 
-    fun save(rawJson: String): CaroutProgressSnapshot {
+    fun save(rawJson: String): CaroutProgressSnapshot = synchronized(accessLock) {
         val snapshot = CaroutProgressCodec.decode(rawJson)
-        preferences.edit { putString(KEY_PROGRESS, snapshot.toJson()) }
-        return snapshot
+        // 此方法由 WebView Bridge 工作线程调用。小体积关卡存档使用 commit 同步确认，确保
+        // 通关后立即关闭 Activity 或杀进程时，首页仍能读取到已经落盘的最新进度。
+        check(preferences.edit().putString(KEY_PROGRESS, snapshot.toJson()).commit()) {
+            "Unable to persist carout progress"
+        }
+        snapshot
     }
 
     private companion object {
@@ -66,8 +71,9 @@ internal object CaroutProgressCodec {
     )
 
     private data class RawProgress(
-        val unlocked: Int? = null,
-        val done: Map<String, Boolean>? = null,
+        // 字段名属于 Web/Android 共同使用的持久化协议，不能依赖 Kotlin/R8 生成的成员名。
+        @SerializedName("unlocked") val unlocked: Int? = null,
+        @SerializedName("done") val done: Map<String, Boolean>? = null,
     )
 }
 
