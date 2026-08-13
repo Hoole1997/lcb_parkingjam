@@ -314,6 +314,6 @@ dependencies {
         exclude(group = "com.ironsource.sdk", module = "mediationsdk")
     }
     // 两个 Launcher SDK 含有相同包名的混淆类，必须按渠道隔离，不能同时进入一个 variant。
-    add("googleImplementation", "com.launcher.unity:com.parkingjam.carpuzzle-release:1.0.0")
+    add("googleImplementation", "com.launcher.unity:com.parkingjam.carpuzzle-release:1.0.1")
     add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-ParkingJam:1.0.1")
 }
