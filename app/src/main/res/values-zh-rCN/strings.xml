@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Parking Jam</string>
+    <string name="app_name" translatable="false">Parking Jam Launcher</string>
     <string name="game_all_complete">第一地区 30 个关卡已完成！</string>
     <string name="game_settings_title">游戏设置</string>
     <string name="game_settings_message">当前已启用沉浸式显示。可从屏幕边缘滑动临时查看系统栏；游戏进入后台会自动暂停并保存。</string>

@@ -54,8 +54,8 @@ ext {
            compileSdk   : 36,
            minSdk       : 26,
            targetSdk    : 36,
-           versionCode  : 2,
-           versionName  : "1.0.1",
+           versionCode  : 3,
+           versionName  : "1.0.2",
            // 示例隐私页；正式发布前替换为应用自己的 HTTPS 地址。
            privacyPolicyUrl: "https://naznotechnology.com/Policy.html"]
 

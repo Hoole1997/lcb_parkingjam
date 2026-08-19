@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Parking Jam</string>
+    <string name="app_name" translatable="false">Parking Jam Launcher</string>
     <string name="game_all_complete">All 30 levels in District 1 are complete!</string>
     <string name="game_settings_title">Game Settings</string>
     <string name="game_settings_message">Immersive display is enabled. Swipe from a screen edge to temporarily show system bars. The game pauses and saves when it moves to the background.</string>
