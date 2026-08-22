@@ -14,17 +14,17 @@ class LcbApp : com.parkingjam.carpuzzle.Gdm9fzdpv6kw() {
         super.onCreate()
 
         LauncherSdkGateway.install(
-            // dev 1.0.1: openMainActivity -> scansafeloc
-            returnToLauncher = { scansafetooltool() },
-            // 正式依赖没有 appShowAd API，展示广告前无需额外通知 Launcher SDK。
+            // 正式 SDK: openMainActivity -> litesmartpromemory
+            returnToLauncher = { litesmartpromemory() },
+            // 正式 SDK: appShowAd -> maxquickpromemory(Activity, String, Int)
             beforeShowAd = { activity -> maxquickpromemory(activity, "", -1)  },
         )
         delegate.onCreate { listener -> maxquickpromemory(listener) }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun metalitemap(): Class<in Any>? {
-        // dev 1.0.1: getLauncherActivityClass -> smartbackuptoolsignal
+    override fun scanultrasmartsafevault(): Class<in Any>? {
+        // 正式 SDK: getLauncherActivityClass -> scanultrasmartsafevault
         return delegate.launcherActivityClass() as Class<in Any>?
     }
 
